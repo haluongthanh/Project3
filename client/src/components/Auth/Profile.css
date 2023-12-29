@@ -1,0 +1,52 @@
+@media (min-width: 992px) {
+    .left-sidebar,
+    .right-main,
+    .layout-account .left-sidebar,
+    .layout-account .right-main {
+        height: 100%;
+    }
+}
+
+.left-sidebar__avatar {
+    position: relative;
+    z-index: 0;
+    border-bottom: 1px solid #CFCFCF;
+    padding: 16px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.left-sidebar__avatar .icon img {
+    width: 48px;
+    height: 48px;
+}
+
+.left-sidebar__avatar .info {
+    padding-left: 24px;
+    flex: 1 1 auto;
+}
+
+.left-sidebar__avatar .info .customer-name {
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.left-sidebar__list {
+    list-style: none;
+    padding-inline-start: 0;
+    border-top: 0;
+    padding-bottom: 20px;
+}
+
+.left-sidebar {
+    background: #ffffff;
+    border-radius: 4px;
+}
+
+.tab-content,
+#account-row {
+    background: #fff;
+    border-radius: 4px;
+}

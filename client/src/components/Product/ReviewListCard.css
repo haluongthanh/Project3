@@ -1,0 +1,78 @@
+.items-comment {
+    border-bottom: 1px solid #ececec;
+}
+
+@media (min-width: 992px) {
+    .product-rating--wrapper .product-reviews--body {
+        width: 70%;
+    }
+}
+
+@media (min-width: 768px) {
+    .product-rating--wrapper .product-reviews--body {
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+    }
+}
+
+@media (min-width: 768px) {
+    .product-rating--wrapper .product-reviews--body .items-comment .items-comment-top {
+        margin-bottom: 8px;
+    }
+}
+
+.product-rating--wrapper .product-reviews--body .items-comment .items-comment-top {
+    display: flex;
+    align-items: center;
+}
+
+.product-rating--wrapper .product-reviews--body .items-comment .items-comment-top .items-comment-name {
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.product-rating--wrapper .product-reviews--body .items-comment .items-comment-top .items-comment-date {
+    color: #97999D;
+}
+
+.product-rating--wrapper .product-reviews--body .items-comment .items-comment-bottom {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media (min-width: 992px) {
+    .product-rating--wrapper .product-reviews--body .items-comment .items-comment-left {
+        width: 16%;
+    }
+}
+
+@media (min-width: 768px) {
+    .product-rating--wrapper .product-reviews--body .items-comment .items-comment-left {
+        width: 22%;
+    }
+}
+
+.product-rating--wrapper .product-reviews--body .items-comment .items-comment-left {
+    width: 100%;
+}
+
+.product-rating--wrapper .product-reviews--body .items-comment .items-comment-right {
+    width: 100%;
+    padding: 2px 0 0 0;
+}
+
+@media (min-width: 768px) {
+    .product-rating--wrapper .product-reviews--body .items-comment .items-comment-right .items-comment-content {
+        margin: 0 0 16px 0;
+    }
+}
+
+.product-rating--wrapper .product-reviews--body .items-comment .items-comment-right .items-comment-content {
+    margin: 0 0 8px 0;
+}
+
+.product-rating--wrapper .product-reviews--body {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    /* border-bottom: 1px solid #ececec; */
+}
