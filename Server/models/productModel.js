@@ -78,7 +78,8 @@ const productSchema = new mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: "User"
         }
-    }
+    },
+    discontinued: { Boolean, default: false }
 }, {
     timestamps: true
 })

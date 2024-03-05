@@ -2,11 +2,12 @@ import React,{useEffect,useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {useSelector,useDispatch} from 'react-redux';
 import {toast} from 'react-toastify';
-import BoxShadowLoader from '../../../components/Skeletons/BoxShadowLoader';
+import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
 
-import {Box, Typography,TextField, Button} from '@mui/material';
+import {Box, Typography,TextField, Button,Grid,FormControl,InputLabel,Select,MenuItem} from '@mui/material';
 import UpdateIcon from '@mui/icons-material/Update';
 import { brandDetails, resetMutationResult, selectBrandDetails, selectBrandMutationResult, updateBrand } from '../../../redux/features/brandSlice';
+
 
 const UpdateBrand = () => {
     const {id}=useParams();
@@ -14,13 +15,14 @@ const UpdateBrand = () => {
 
     const [title,setTitle]=useState('');
     const [description,setDescription]=useState('');
+    const [discontinued,setDiscontinued]=useState('')
 
     const {loading, brand}=useSelector(selectBrandDetails);
     const {loading:isUdating, success}=useSelector(selectBrandMutationResult);
 
     const handleSubmit=(e)=>{
         e.preventDefault();
-        const jsonData={title,description};
+        const jsonData={title,description,discontinued};
         dispatch(updateBrand({id,jsonData,toast}));
     }
 
@@ -34,6 +36,7 @@ const UpdateBrand = () => {
     useEffect(() => {
         if(brand)
         {
+            setDiscontinued(brand?.discontinued)
             setTitle(brand.title);
             setDescription(brand.description);
         }
@@ -67,6 +70,21 @@ const UpdateBrand = () => {
                         value={description}
                         onChange={(e=>setDescription(e.target.value))}
             />
+            <Grid item xs={6}>
+                <FormControl sx={{width:'100%'}}>
+                    <InputLabel id='status'>Status</InputLabel>
+                    <Select required
+                            labelId='status'
+                            id='status'
+                            value={discontinued}
+                            label='status'
+                            onChange={(e=>setDiscontinued(e.target.value))}>
+
+                                <MenuItem value='true'>Block</MenuItem>
+                                <MenuItem value='false'>Active</MenuItem>
+                    </Select>
+                </FormControl>
+            </Grid>
             <Button type='submit'
                         fullWidth 
                         disabled={isUdating?true:false}                       

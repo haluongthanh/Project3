@@ -7,6 +7,7 @@ const { saveImages, removeFiles } = require('../utils/processImages');
 exports.addCategory = asyncHandler(async(req, res, next) => {
     req.body.addedBy = req.userInfo.userId;
     const category = await Category.create(req.body);
+    category.discontinued = false;
     if (Category) {
         const path = `CategoryImg/${category._id}`
         const imgCategory = await saveImages(req.files, path);
@@ -61,7 +62,7 @@ exports.deleteCategory = asyncHandler(async(req, res, next) => {
     if (!category) return next(new ErrorHandler('Category not found.', 404))
     const active = await Product.findOne({ category: req.params.id });
     if (active) return next(new ErrorHandler('Category is used.Could not deleted.', 406));
-
+    if (category.discontinued != "false") return next(new ErrorHandler('danh mục không ở trạng thái block'));
     const path = `CategoryImg/${category._id}`;
     removeFiles(path);
 

@@ -156,9 +156,9 @@ const Home = () => {
                                 <h2 className="hTitle"> {cat.title}</h2>
                             </div>
                         </div>
-                        {/* <div className='box-right'>
-                            <Link to={`/product/${cat.title}`} key={cat} >xem tất cả</Link>
-                        </div> */}
+                        <div className='box-right'>
+                            <Link to={`/collection/${cat._id}`} key={cat} >xem tất cả</Link>
+                        </div>
                     </div>
                     <div className='section-content'>
                     <Box className='card-container'>

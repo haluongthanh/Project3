@@ -89,7 +89,8 @@ const ConfirmOrder = () => {
         navigate('/cod');
     }
   return (
-    <>
+    <div class="container-fluid">
+    <div className='wrapper-content'>
     <Typography component='h1'
                 variant='h5'
                 sx={{textAlign:'center'}}>
@@ -109,6 +110,7 @@ const ConfirmOrder = () => {
             </Box>
             <Box>
                 <List>
+                    
                     <ListItem>
                         <ListItemAvatar>
                             <Avatar>
@@ -235,7 +237,8 @@ const ConfirmOrder = () => {
             sx={{m:4, width:250, m:'0 auto', display:'block'}}
             onClick={proccedToPayment}>Procced to payment
     </Button>
-    </>
+    </div>
+    </div>
   )
 }
 

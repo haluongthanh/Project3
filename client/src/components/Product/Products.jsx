@@ -97,129 +97,130 @@ const Products = () => {
     
   return (
     <Box className='wrapper'>
+      <div className='wrapper-content'>
         <Box className='filter-box'>
-        <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography sx={{display:'flex'}}><FilterAltIcon/>Filter products</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-
-        <Box className='search-filter-box'>
-        <Accordion>
+          <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <Typography sx={{display:'flex'}}>Search products</Typography>
+            <Typography sx={{display:'flex'}}><FilterAltIcon/>Filter products</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <TextField type='text'
-                          id='search'
-                          label='Search'
-                          name='search'
-                          margin='normal'
-                          fullWidth
-                          value={search}
-                          onChange={handleSearch}
+
+          <Box className='search-filter-box'>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography sx={{display:'flex'}}>Search products</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <TextField type='text'
+                            id='search'
+                            label='Search'
+                            name='search'
+                            margin='normal'
+                            fullWidth
+                            value={search}
+                            onChange={handleSearch}
+                />
+            </AccordionDetails>
+          </Accordion>
+          </Box>
+
+          <Box className='price-filter-box'>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography sx={{display:'flex'}}>By price</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Slider
+                value={priceRange}
+                min={minPrice}
+                step={1000}
+                max={maxPrice}
+                onChange={(e,newPriceRange)=>priceHandler(e,newPriceRange)}
+                valueLabelDisplay="on"
               />
-          </AccordionDetails>
-        </Accordion>
-        </Box>
+            </AccordionDetails>
+          </Accordion>
+          </Box>
 
-        <Box className='price-filter-box'>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography sx={{display:'flex'}}>By price</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
+          <Box className='rating-filter-box'>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography sx={{display:'flex'}}>By rating</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
             <Slider
-              value={priceRange}
-              min={minPrice}
-              step={1000}
-              max={maxPrice}
-              onChange={(e,newPriceRange)=>priceHandler(e,newPriceRange)}
-              valueLabelDisplay="on"
-            />
-          </AccordionDetails>
-        </Accordion>
-        </Box>
+                defaultValue={0}
+                min={0}
+                step={.1}
+                max={5}
+                onChange={ratingHandler}
+                valueLabelDisplay="on"
+              />
+            </AccordionDetails>
+          </Accordion>
+          </Box>
 
-        <Box className='rating-filter-box'>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography sx={{display:'flex'}}>By rating</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-          <Slider
-              defaultValue={0}
-              min={0}
-              step={.1}
-              max={5}
-              onChange={ratingHandler}
-              valueLabelDisplay="on"
-            />
-          </AccordionDetails>
-        </Accordion>
-        </Box>
+          <Box className='category-filter-box'>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography sx={{display:'flex'}}>By categories</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <List component="nav" aria-label="main mailbox folders">
 
-        <Box className='category-filter-box'>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography sx={{display:'flex'}}>By categories</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <List component="nav" aria-label="main mailbox folders">
+              <ListItemButton
+                            key={0}
+                            id={0}
+                            selected={selectedIndex === 0}
+                            onClick={(event) => handleListItemClick(event, 0, '')}>
+                <ListItemText primary="All" />
+              </ListItemButton>   
 
-            <ListItemButton
-                          key={0}
-                          id={0}
-                          selected={selectedIndex === 0}
-                          onClick={(event) => handleListItemClick(event, 0, '')}>
-              <ListItemText primary="All" />
-            </ListItemButton>   
+              {categories && categories.map((cat,index)=>  
 
-            {categories && categories.map((cat,index)=>  
+              <ListItemButton
+                            key={cat._id}
+                            id={cat._id}
+                            selected={selectedIndex === index+1}
+                            onClick={(event) => handleListItemClick(event, index+1, cat._id)}>
+                <ListItemText primary={cat.title} />
+              </ListItemButton>           
 
-            <ListItemButton
-                          key={cat._id}
-                          id={cat._id}
-                          selected={selectedIndex === index+1}
-                          onClick={(event) => handleListItemClick(event, index+1, cat._id)}>
-              <ListItemText primary={cat.title} />
-            </ListItemButton>           
+              )}
 
-            )}
+              </List>
 
-            </List>
+            </AccordionDetails>
+          </Accordion>
+          </Box>
+
+
 
           </AccordionDetails>
-        </Accordion>
-        </Box>
-
-
-
-        </AccordionDetails>
-        </Accordion>
+          </Accordion>
 
         </Box>
-
+        </div>
         <Box className='container'>
           {loading && loading ? <HeadingWaveSkeleton/>:
             <Typography variant='div'

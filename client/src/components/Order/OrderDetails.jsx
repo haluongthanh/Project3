@@ -31,7 +31,8 @@ const OrderDetails = () => {
   return (
     <>
     {loading ? <BoxShadowLoader/>:
-    <>
+    <div className='container-fluid'>
+        <div className='wrapper-content'>
     <Typography component='h1' variant='h5' gutterBottom sx={{textAlign:'center'}}>
         Order details
     </Typography>
@@ -200,9 +201,11 @@ const OrderDetails = () => {
         </Box>
     </Box>
     
-    </>
+    </div>
+    </div>
     }
     </>
+    
   )
 }
 

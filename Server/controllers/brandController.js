@@ -32,6 +32,8 @@ exports.updateBrand = asyncHandler(async(req, res, next) => {
 exports.deleteBrand = asyncHandler(async(req, res, next) => {
     let brand = await Brand.findById(req.params.id);
     if (!brand) return next(new ErrorHandler('Brand not found.', 404));
+    if (brand.discontinued != "true") return next(new ErrorHandler('trạng thái brand không phải false '))
+
     const active = await Product.findOne({ brand: req.params.id });
     if (active) return next(new ErrorHandler('Brand is used.Could not deleted.', 406));
     await brand.remove();

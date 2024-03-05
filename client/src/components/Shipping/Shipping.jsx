@@ -28,90 +28,102 @@ const Shipping = () => {
         navigate('/confirm-order');
     }
   return (
-    <Box sx={{m:'0 auto',marginTop:2,textAlign:'center', maxWidth:'550px'}}>
-        <LocationOnIcon sx={{width:100,height:100,color:'#1976d2'}}/>
-        <Typography component='div' variant='h5'>Shipping Information</Typography>
-        <Box component='form' onSubmit={handleSubmit} sx={{p:1}}>
-            <TextareaAutosize required
-                              aria-label='address'
-                              minRows={5}
-                              placeholder='Address'
-                              value={address}
-                              style={{width:'100%',marginTop:'16px'}}
-                              onChange={(e=>setAddress(e.target.value))}
-            />
-            <TextField type='text'
-                          id='phone'
-                          label='Phone'
-                          name='phone'
-                          margin='normal'
-                          required
-                          fullWidth
-                          value={phone}
-                          onChange={(e=>setPhone(e.target.value))}
-            /> 
-            <Grid container spacing={2}>
+    <div class="container-fluid">
+    <div class="wrapper-content">
+      <Box sx={{m:'0 auto',marginTop:2,textAlign:'center', maxWidth:'550px'}}>
+          <LocationOnIcon sx={{width:100,height:100,color:'#1976d2'}}/>
+          <Typography component='div' variant='h5'>Shipping Information</Typography>
+          <Box component='form' onSubmit={handleSubmit} sx={{p:1}}>
+          <TextField type='text'
+                            id='name'
+                            label='name'
+                            name='name'
+                            margin='normal'
+                            required
+                            fullWidth
+                            value={name}
+                            onChange={(e=>setName(e.target.value))}
+              /> 
+              <TextareaAutosize required
+                                aria-label='address'
+                                minRows={5}
+                                placeholder='Address'
+                                value={address}
+                                style={{width:'100%',marginTop:'16px'}}
+                                onChange={(e=>setAddress(e.target.value))}
+              />
+              <TextField type='text'
+                            id='phone'
+                            label='Phone'
+                            name='phone'
+                            margin='normal'
+                            required
+                            fullWidth
+                            value={phone}
+                            onChange={(e=>setPhone(e.target.value))}
+              /> 
+              <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                      <TextField type='text'
+                            id='city'
+                            label='City'
+                            name='city'
+                            margin='normal'
+                            required
+                            fullWidth
+                            value={city}
+                            onChange={(e=>setCity(e.target.value))}
+                  />
+                </Grid>
                 <Grid item xs={6}>
-                    <TextField type='text'
-                          id='city'
-                          label='City'
-                          name='city'
-                          margin='normal'
-                          required
-                          fullWidth
-                          value={city}
-                          onChange={(e=>setCity(e.target.value))}
-                />
+                      <TextField type='text'
+                            id='zipCode'
+                            label='Zip'
+                            name='zipCode'
+                            margin='normal'
+                            required
+                            fullWidth
+                            value={zipCode}
+                            onChange={(e=>setZipCode(e.target.value))}
+                  />               
+                  </Grid>
               </Grid>
-              <Grid item xs={6}>
-                    <TextField type='text'
-                          id='zipCode'
-                          label='Zip'
-                          name='zipCode'
-                          margin='normal'
-                          required
-                          fullWidth
-                          value={zipCode}
-                          onChange={(e=>setZipCode(e.target.value))}
-                />               
-                </Grid>
-            </Grid>
 
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <CountryDropdown classes='ship-drop-down'
-                                  defaultOptionLabel='Select a coutry'
-                                  style={{width:'100%'}}
-                                  value={country}
-                                  valueType='short'
-                                  whitelist={['VN']}
-                                  onChange={(e=>setCountry(e))}
-                />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <CountryDropdown classes='ship-drop-down'
+                                    defaultOptionLabel='Select a coutry'
+                                    style={{width:'100%'}}
+                                    value={country}
+                                    valueType='short'
+                                    whitelist={['VN']}
+                                    onChange={(e=>setCountry(e))}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <RegionDropdown classes='ship-drop-down'
+                                    defaultOptionLabel='Now select a region'
+                                    blankOptionLabel='No country selected'
+                                    style={{width:'100%'}}
+                                    value={state}
+                                    country={country}
+                                    countryValueType='short'
+                                    onChange={(e=>setState(e))}
+                  />              
+                  </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <RegionDropdown classes='ship-drop-down'
-                                  defaultOptionLabel='Now select a region'
-                                  blankOptionLabel='No country selected'
-                                  style={{width:'100%'}}
-                                  value={state}
-                                  country={country}
-                                  countryValueType='short'
-                                  onChange={(e=>setState(e))}
-                />              
-                </Grid>
-            </Grid>
 
-            <Button type='submit'
-                    variant='contained'
-                    startIcon={<LocalShippingIcon/>}
-                    sx={{m:4}}>
-                Continue
-            </Button>
+              <Button type='submit'
+                      variant='contained'
+                      startIcon={<LocalShippingIcon/>}
+                      sx={{m:4}}>
+                  Continue
+              </Button>
 
 
-        </Box>
-    </Box>
-    
+          </Box>
+      </Box>
+    </div></div>
   )
 }
 
