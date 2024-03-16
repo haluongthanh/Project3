@@ -1,12 +1,12 @@
 const express = require('express');
-const { registerUser, loginUser, logout, updatePassword, updateProfile, getUsers, getUserDetails, updateUserRole, deleteUser, refreshToken } = require('../controllers/userController');
+const { AuthGoogle, registerUser, loginUser, logout, updatePassword, updateProfile, getUsers, getUserDetails, updateUserRole, deleteUser, refreshToken } = require('../controllers/userController');
 const fileUpload = require('express-fileupload');
 const filesPayloadExists = require('../middleware/filesPayloadExists');
 const fileExtLimiter = require('../middleware/fileExtLimiter');
 const fileSizeLimiter = require('../middleware/fileSizeLimiter');
 const { isAuthenticated, authorizeRoles } = require('../middleware/auth');
-
-
+const passport = require('passport')
+const pastportConfig = require('../middleware/passport')
 const router = express.Router();
 
 
@@ -33,7 +33,6 @@ router.route('/users').get(isAuthenticated,
     getUsers);
 
 router.route('/users/:id').get(isAuthenticated, authorizeRoles('admin'), getUserDetails).put(isAuthenticated, authorizeRoles('admin'), updateUserRole).delete(isAuthenticated, authorizeRoles('admin'), deleteUser)
-
-
+router.route('/auth/google').post(AuthGoogle);
 
 module.exports = router;

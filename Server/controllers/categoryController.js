@@ -18,8 +18,13 @@ exports.addCategory = asyncHandler(async(req, res, next) => {
 })
 
 exports.getCategories = asyncHandler(async(req, res, next) => {
+    const categories = await Category.find({ categoryStatus: "active" });
+    res.status(200).json({ success: true, categories });
+})
+exports.getCategoriesAuthorizeRole = asyncHandler(async(req, res, next) => {
     const categories = await Category.find();
     res.status(200).json({ success: true, categories });
+
 })
 
 exports.getCategoryDetails = asyncHandler(async(req, res, next) => {
@@ -36,6 +41,11 @@ exports.updateCategory = asyncHandler(async(req, res, next) => {
     let category = await Category.findById(req.params.id);
 
     if (!category) return next(new ErrorHandler('Category not found.', 404))
+
+    if (req.body.categoryStatus == "pause") {
+        const active = await Product.findOne({ brand: req.params.id, productStatus: "active" });
+        if (active) return next(new ErrorHandler('Brand is used.Could not deleted.', 406));
+    }
 
     category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true, useFindAndModify: false });
 
@@ -62,7 +72,7 @@ exports.deleteCategory = asyncHandler(async(req, res, next) => {
     if (!category) return next(new ErrorHandler('Category not found.', 404))
     const active = await Product.findOne({ category: req.params.id });
     if (active) return next(new ErrorHandler('Category is used.Could not deleted.', 406));
-    if (category.discontinued != "false") return next(new ErrorHandler('danh mục không ở trạng thái block'));
+    if (category.categoryStatus != "pause") return next(new ErrorHandler('danh mục không ở trạng thái block'));
     const path = `CategoryImg/${category._id}`;
     removeFiles(path);
 

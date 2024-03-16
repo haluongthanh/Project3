@@ -19,7 +19,11 @@ const brandSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "User",
     },
-    discontinued: { Boolean, default: false }
+    brandStatus: {
+        type: String,
+        enum: ['active', 'pause'],
+        default: 'pause'
+    }
 }, { timestamps: true })
 
 module.exports = mongoose.model("Brand", brandSchema);

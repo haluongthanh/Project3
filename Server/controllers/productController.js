@@ -49,11 +49,11 @@ exports.getProducts = asyncHandler(async(req, res, next) => {
     }
 
     const productCount = await Product.countDocuments();
-    const apiFeature = new ApiFeatures(Product.find().sort(sortBy), req.query)
+    const apiFeature = new ApiFeatures(Product.find({ productStatus: "active" }).sort(sortBy), req.query)
         .search()
         .filter();
 
-    const filteredApiFeature = new ApiFeatures(Product.find().sort(sortBy), req.query)
+    const filteredApiFeature = new ApiFeatures(Product.find({ productStatus: "active" }).sort(sortBy), req.query)
         .search()
         .filter();
 
@@ -83,8 +83,7 @@ exports.getProductDetails = asyncHandler(async(req, res, next) => {
 })
 
 exports.getProductsByAuthorizeRoles = asyncHandler(async(req, res, next) => {
-    const { roles } = req.userInfo;
-    let storeId;
+
     let products;
 
     products = await Product.find();
@@ -131,7 +130,7 @@ exports.deleteProduct = asyncHandler(async(req, res, next) => {
     if (!product) return next(new Errorhandler('Product not found', 404));
     const active = await Order.findOne({ orderItems: { $elemMatch: { product: req.params.id } } });
     if (active) return next(new Errorhandler('Product is used in order. Could not deleted.', 404));
-
+    if (product.productStatus != "pause") return next(new ErrorHandler('no deleted'), 404);
     const path = `products/${product._id}`;
     const remove = removeFiles(path);
     if (remove) {

@@ -14,6 +14,8 @@ const AddNewCategory = () => {
     const {loading,success}=useSelector(selectCategoryMutationResult);
     const [title,setTitle]=useState('');
     const [description,setDescription]=useState('');
+    const [categoryStatus,setCategoryStatus]=useState('');
+
     const [Image,setImage]=useState('');
     const [CategoryImg,setCategoryImg]=useState('');
 
@@ -42,6 +44,7 @@ const AddNewCategory = () => {
         const jsonData=new FormData();
         jsonData.append('title',title);
         jsonData.append('description',description);
+        jsonData.append('categoryStatus',categoryStatus);
         Object.keys(CategoryImg).forEach(key=>{
           jsonData.append(CategoryImg.item(key).name,CategoryImg.item(key));
         })
@@ -56,6 +59,7 @@ const AddNewCategory = () => {
         setDescription('');
         setImage('');
         setCategoryImg('');
+        setCategoryStatus('');
       }
     }, [success, dispatch]);
     
@@ -130,6 +134,20 @@ const AddNewCategory = () => {
                     Change Image
                   </Button>
                 </Grid>
+            </Grid>
+            <Grid item xs={6}>
+                <FormControl sx={{width:'100%'}}>
+                    <InputLabel id='status'>Status</InputLabel>
+                    <Select required
+                            labelId='status'
+                            id='status'
+                            value={categoryStatus}
+                            label='status'
+                            onChange={(e=>setCategoryStatus(e.target.value))}> 
+                                <MenuItem value='pause'>Pause</MenuItem>
+                                <MenuItem value='active'>Active</MenuItem>
+                    </Select>
+                </FormControl>
             </Grid>
             <Button type='submit'
                         fullWidth

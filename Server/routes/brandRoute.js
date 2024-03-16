@@ -1,5 +1,5 @@
 const express = require('express');
-const { addBrand, getBrands, getBrandDetails, updateBrand, deleteBrand } = require('../controllers/brandController');
+const { addBrand, getBrands, getBrandDetails, updateBrand, deleteBrand, getBrandsAuthorizeRole } = require('../controllers/brandController');
 
 const { isAuthenticated, authorizeRoles } = require('../middleware/auth');
 
@@ -16,5 +16,5 @@ router.route('/brands/:id')
     .delete(isAuthenticated, authorizeRoles('admin'), deleteBrand);
 
 
-
+router.route('/athorized/brands').get(isAuthenticated, authorizeRoles('admin', 'seller'), getBrandsAuthorizeRole);
 module.exports = router;

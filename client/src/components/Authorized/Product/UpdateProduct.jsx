@@ -50,6 +50,7 @@ const UpdateProduct = () => {
     const [stock,setStock]=useState(1);
     const [category,setCategory]=useState('');
     const [brand,setBrand]=useState('');
+    const [productStatus,setProductStatus]=useState('');
     const [localShipmentPolicy,setLocalShipmentPolicy]=useState('standard');
     const [internationalShipmentPolicy,setInternationalShipmentPolicy]=useState('standard');
     const [customLocalShipmentCost,setCustomLocalShipmentCost]=useState('');
@@ -91,11 +92,12 @@ const UpdateProduct = () => {
         formData.append('stock',stock);
         formData.append('category',category);
         formData.append('brand',brand);
+        formData.append('productStatus',productStatus)
         formData.append('localShipmentPolicy',localShipmentPolicy);
         formData.append('internationalShipmentPolicy',internationalShipmentPolicy);
         formData.append('customLocalShipmentCost',customLocalShipmentCost);
         formData.append('setCustomInternationalShipmentCost',setCustomInternationalShipmentCost);
-
+        
 
         Object.keys(productFiles).forEach(key=>{
           formData.append(productFiles.item(key).name,productFiles.item(key));
@@ -129,6 +131,7 @@ const UpdateProduct = () => {
             setCustomLocalShipmentCost(product?.customLocalShipmentCost);
             setCustomInternationalShipmentCost(product?.setCustomInternationalShipmentCost);
             setImages(product.images);
+            setProductStatus(product.discontinued);
         }
       }, [product]);
 
@@ -409,6 +412,21 @@ const UpdateProduct = () => {
                 }
               </Box>
             )}
+             <Grid item xs={6}>
+                <FormControl sx={{width:'100%'}}>
+                    <InputLabel id='status'>Status</InputLabel>
+                    <Select required
+                            labelId='status'
+                            id='status'
+                            value={productStatus}
+                            label='status'
+                            onChange={(e=>setProductStatus(e.target.value))}>
+
+                                <MenuItem value='pause'>Pause</MenuItem>
+                                <MenuItem value='active'>Active</MenuItem>
+                    </Select>
+                </FormControl>
+            </Grid>
 
 
 

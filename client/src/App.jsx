@@ -9,7 +9,7 @@ import { axiosPublic } from './redux/axiosPublic';
 
 import {Route,Routes} from 'react-router';
 import MainLayout from './components/Layout/MainLayout'
-import Aboutus from './components/Pages/Aboutus';
+import blog from './components/Pages/Blog';
 import Contactus from './components/Pages/Contactus';
 import Auth from './components/Auth/Auth';
 import AuthenticatedRoute from './components/Routes/AuthenticatedRoute';
@@ -34,6 +34,11 @@ import UpdateBanner from './components/Authorized/Banner/UpdateBanner';
 import AddNewProduct from './components/Authorized/Product/AddNewProduct';
 import ProductList from './components/Authorized/Product/ProductList';
 import UpdateProduct from './components/Authorized/Product/UpdateProduct';
+
+
+import AddNewBlog from './components/Authorized/Blog/AddNewBlog';
+import BlogList from './components/Authorized/Blog/BlogList';
+import UpdateBlog from './components/Authorized/Blog/UpdateBlog';
 
 import OrderList from './components/Authorized/Order/OrderList';
 import ProcessOrder from './components/Authorized/Order/ProcessOrder';
@@ -61,7 +66,8 @@ import Unauthorized from './components/Error/Unauthorized';
 import {selectLoggedInUser,selectPersist,refreshUserDetails} from './redux/features/authSlice';
 import BoxShadowLoader from './components/Skeletons/BoxShadowLoader';
 import COD from './components/Payment/COD';
-
+import Blogs from './components/Pages/Blog';
+import Vnpay from './components/Payment/VNpay'
 
 function App() {
   const dispatch=useDispatch();
@@ -109,7 +115,7 @@ function App() {
           <Route path='collection/:id' element={<Products/>}/>
          
           <Route path='product/:id' element={<ProductDetails/>}/>
-          <Route path='about-us' element={<Aboutus/>}/>
+          <Route path='blog-us' element={<Blogs/>}/>
           <Route path='contact-us' element={<Contactus/>}/>
           <Route path='auth' element={<Auth/>}/>
           <Route path='cart' element={<Cart/>}/>
@@ -122,6 +128,7 @@ function App() {
             <Route path='/confirm-order' element={<ConfirmOrder/>}/>
            
             <Route path='/cod' element={ <COD/>}/>
+            <Route path='/Vnpay' element={<Vnpay/>}/>
             <Route path='/order/success' element={<OrderSuccess/>}/>
             <Route path='/order' element={<MyOrders/>}/>
             <Route path='/order/:id' element={<OrderDetails/>}/>
@@ -143,7 +150,9 @@ function App() {
               <Route path='categorylist' element={<CategoryList/>} />
               <Route path='category/:id' element={<UpdateCategory/>} />
 
-             
+              <Route path='blog' element={<AddNewBlog/>} />
+              <Route path='bloglist' element={<BlogList/>} />
+              <Route path='blog/:id' element={<UpdateBlog/>}/>
 
               <Route path='product' element={<AddNewProduct/>} />
               <Route path='productlist' element={<ProductList/>} />

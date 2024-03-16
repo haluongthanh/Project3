@@ -23,6 +23,10 @@ const blogSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "User",
     },
-    discontinued: { Boolean, default: false }
+    blogStatus: {
+        type: String,
+        enum: ['active', 'pause'],
+        default: 'pause'
+    }
 })
 module.exports = mongoose.model('Blog', blogSchema)

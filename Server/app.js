@@ -24,8 +24,10 @@ const user = require('./routes/userRoute');
 const product = require('./routes/productRoute');
 const review = require('./routes/reviewRoute');
 const order = require('./routes/orderRoute');
-const banner = require('./routes/bannerRoute')
-    // const payment = require('./routes/paymentRoute');
+const banner = require('./routes/bannerRoute');
+const blog = require('./routes/blogRoute');
+
+const payment = require('./routes/paymentRoute');
 app.use('/api/v1', category);
 app.use('/api/v1', brand);
 app.use('/api/v1', user);
@@ -33,7 +35,8 @@ app.use('/api/v1', banner);
 app.use('/api/v1', product);
 app.use('/api/v1', review);
 app.use('/api/v1', order);
-// app.use('/api/v1', payment);
+app.use('/api/v1', blog);
+app.use('/api/v1', payment);
 
 
 app.use(errorMiddleware);

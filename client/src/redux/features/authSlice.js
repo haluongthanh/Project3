@@ -25,6 +25,17 @@ export const login = createAsyncThunk('auth/login', async({ jsonData, toast }, {
         return rejectWithValue(error.response.data.message);
     }
 })
+export const loginGoogle = createAsyncThunk('auth/google', async({ formData, toast }, { rejectWithValue }) => {
+    try {
+        const { data } = await axiosPublic.post(`/auth/google`, formData);
+        toast.success('Successfully logged in.');
+        return data;
+
+    } catch (error) {
+        toast.error(error.response.data.message);
+        return rejectWithValue(error.response.data.message);
+    }
+})
 
 export const logout = createAsyncThunk('auth/logout', async({ toast }, { rejectWithValue }) => {
     try {
@@ -149,7 +160,20 @@ const authSlice = createSlice({
             state.credentials.accessToken = action.payload.accessToken;
             state.credentials.user = action.payload.user;
         },
-        [login.rejected]: (state, action) => {
+        [loginGoogle.rejected]: (state, action) => {
+            state.credentials.loading = false;
+            state.credentials.error = action.payload;
+        },
+        //login google
+        [loginGoogle.pending]: (state, action) => {
+            state.credentials.loading = true;
+        },
+        [loginGoogle.fulfilled]: (state, action) => {
+            state.credentials.loading = false;
+            state.credentials.accessToken = action.payload.accessToken;
+            state.credentials.user = action.payload.user;
+        },
+        [loginGoogle.rejected]: (state, action) => {
             state.credentials.loading = false;
             state.credentials.error = action.payload;
         },

@@ -3,7 +3,7 @@ const fileUpload = require('express-fileupload');
 const filesPayloadExists = require('../middleware/filesPayloadExists');
 const fileExtLimiter = require('../middleware/fileExtLimiter');
 const fileSizeLimiter = require('../middleware/fileSizeLimiter');
-const { addCategory, getCategories, getCategoryDetails, updateCategory, deleteCategory } = require('../controllers/categoryController');
+const { addCategory, getCategories, getCategoryDetails, updateCategory, deleteCategory, getCategoriesAuthorizeRole } = require('../controllers/categoryController');
 const router = express.Router();
 const { isAuthenticated, authorizeRoles } = require('../middleware/auth');
 
@@ -14,7 +14,7 @@ router.route('/categories')
         fileUpload({ createParentPath: true }),
         fileExtLimiter(['.png', '.jpg', '.jpeg']),
         fileSizeLimiter, addCategory)
-    .get(getCategories);
+    .get(getCategories);;
 
 
 router.route('/categories/:id')
@@ -26,6 +26,7 @@ router.route('/categories/:id')
         fileSizeLimiter, updateCategory)
     .delete(isAuthenticated, authorizeRoles('admin'), deleteCategory);
 
+router.route('/athorized/categorys').get(isAuthenticated, authorizeRoles('admin', 'seller'), getCategoriesAuthorizeRole);
 
 
 module.exports = router;

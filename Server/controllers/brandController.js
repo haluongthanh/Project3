@@ -11,8 +11,14 @@ exports.addBrand = asyncHandler(async(req, res, next) => {
 })
 
 exports.getBrands = asyncHandler(async(req, res, next) => {
+    const brands = await Brand.find({ brandStatus: "active" });
+    res.status(200).json({ success: true, brands });
+})
+
+exports.getBrandsAuthorizeRole = asyncHandler(async(req, res, next) => {
     const brands = await Brand.find();
     res.status(200).json({ success: true, brands });
+
 })
 
 exports.getBrandDetails = asyncHandler(async(req, res, next) => {
@@ -25,6 +31,12 @@ exports.updateBrand = asyncHandler(async(req, res, next) => {
     req.body.updatedBy = req.userInfo.userId;
     let brand = await Brand.findById(req.params.id);
     if (!brand) return next(new ErrorHandler('Brand not found.', 404))
+
+    if (req.body.brandStatus == "pause") {
+        const active = await Product.findOne({ brand: req.params.id, productStatus: "active" });
+        if (active) return next(new ErrorHandler('Brand is used.Could not deleted.', 406));
+    }
+
     brand = await Brand.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true, useFindAndModify: false });
     res.status(201).json({ success: true, brand });
 });
@@ -32,7 +44,8 @@ exports.updateBrand = asyncHandler(async(req, res, next) => {
 exports.deleteBrand = asyncHandler(async(req, res, next) => {
     let brand = await Brand.findById(req.params.id);
     if (!brand) return next(new ErrorHandler('Brand not found.', 404));
-    if (brand.discontinued != "true") return next(new ErrorHandler('trạng thái brand không phải false '))
+
+    if (brand.brandStatus != "true") return next(new ErrorHandler('trạng thái brand không phải false '))
 
     const active = await Product.findOne({ brand: req.params.id });
     if (active) return next(new ErrorHandler('Brand is used.Could not deleted.', 406));

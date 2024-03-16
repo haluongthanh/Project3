@@ -128,6 +128,10 @@ export default function TreeMenu() {
           <StyledTreeItem nodeId="17" label="New Banner" onClick={()=>goto('banner')}  />
           <StyledTreeItem nodeId="18" label="Banner List" onClick={()=>goto('bannerlist')}/>
         </StyledTreeItem>
+        <StyledTreeItem nodeId="10" label="Blog">
+          <StyledTreeItem nodeId="19" label="New Blog" onClick={()=>goto('blog')}  />
+          <StyledTreeItem nodeId="20" label="Blog List" onClick={()=>goto('bloglist')}/>
+        </StyledTreeItem>
       </StyledTreeItem>
     </TreeView>
   );

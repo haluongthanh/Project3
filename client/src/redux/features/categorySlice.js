@@ -24,6 +24,16 @@ export const getCategories = createAsyncThunk('category/getCategories', async({ 
     }
 })
 
+export const getCategoriesAuthorizeRole = createAsyncThunk('category/getCategoriesAuthorizeRole', async({ toast }, { rejectWithValue }) => {
+    try {
+        const { data } = await axiosPrivate.get('/athorized/categorys');
+        return data;
+    } catch (error) {
+        toast.error(error.response.data.message);
+        return rejectWithValue(error.response.data.message);
+    }
+})
+
 export const deleteCategory = createAsyncThunk('category/deleteCategory', async({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.delete(`/categories/${id}`);
@@ -61,7 +71,9 @@ const categorySlice = createSlice({
     initialState: {
         mutationResult: { success: false },
         categorylist: {},
-        categoryDetails: {}
+        categoryDetails: {},
+        categorylist1: {},
+
     },
     reducers: {
         resetMutationResult: (state) => {
@@ -92,6 +104,18 @@ const categorySlice = createSlice({
         [getCategories.rejected]: (state, action) => {
             state.categorylist.loading = false;
             state.categorylist.error = action.payload;
+        },
+        // get all category list by role
+        [getCategoriesAuthorizeRole.pending]: (state, action) => {
+            state.categorylist1.loading = true;
+        },
+        [getCategoriesAuthorizeRole.fulfilled]: (state, action) => {
+            state.categorylist1.loading = false;
+            state.categorylist1.categories = action.payload.categories;
+        },
+        [getCategoriesAuthorizeRole.rejected]: (state, action) => {
+            state.categorylist1.loading = false;
+            state.categorylist1.error = action.payload;
         },
         //delete a category
         [deleteCategory.pending]: (state, action) => {
@@ -135,6 +159,7 @@ const categorySlice = createSlice({
 export const selectCategoryMutationResult = (state) => state.category.mutationResult;
 export const selectAllCategories = (state) => state.category.categorylist;
 export const selectCategoryDetails = (state) => state.category.categoryDetails;
+export const selectAllCategoriesAuthorizeRole = (state) => state.category.categorylist1;
 export const { resetMutationResult } = categorySlice.actions;
 
 export default categorySlice.reducer;

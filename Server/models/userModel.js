@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Please enter password.'],
+        // required: [true, 'Please enter password.'],
         minLength: [8, 'Password should be more than 8 characters.'],
         select: false
     },
@@ -45,6 +45,15 @@ const userSchema = new mongoose.Schema({
     blocked: {
         type: Boolean,
         default: false
+    },
+    authType: {
+        type: String,
+        enum: ['local', 'google'],
+        default: 'local'
+    },
+    authGoogleId: {
+        type: String,
+        default: null
     }
 }, {
     timestamps: true

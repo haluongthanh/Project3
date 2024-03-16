@@ -16,8 +16,14 @@ exports.addBlog = asyncHandler(async(req, res, next) => {
 });
 
 exports.getBlogs = asyncHandler(async(req, res, next) => {
+    const blogs = await Blog.find({ blogStatus: "active" });
+    res.status(200).json({ success: true, blogs });
+})
+
+exports.getBlogsAuthorizeRole = asyncHandler(async(req, res, next) => {
     const blogs = await Blog.find();
     res.status(200).json({ success: true, blogs });
+
 })
 
 exports.getBlogDetails = asyncHandler(async(req, res, next) => {
@@ -29,7 +35,6 @@ exports.getBlogDetails = asyncHandler(async(req, res, next) => {
 exports.updateBlog = asyncHandler(async(req, res, next) => {
 
     req.body.updatedBy = req.userInfo.userId;
-    const parent_Blog = req.body.parent_Blog;
 
     let blog = await Blog.findById(req.params.id);
 
@@ -58,10 +63,11 @@ exports.updateBlog = asyncHandler(async(req, res, next) => {
 exports.deleteBlog = asyncHandler(async(req, res, next) => {
     let blog = await Blog.findById(req.params.id);
     if (!blog) return next(new ErrorHandler('Blog not found.', 404))
-    const active = await Product.findOne({ blog: req.params.id });
-    if (active) return next(new ErrorHandler('Blog is used.Could not deleted.', 406));
-    if (banner.bannerStatus != "false") return next(new ErrorHandler('Blog no status pause'))
-    const path = `BllogImg/${blog._id}`;
+
+    if (blog.blogStatus != "pause") return next(new ErrorHandler('Blog no status pause'))
+
+    const path = `BlogImg/${blog._id}`;
+
     removeFiles(path);
 
     await blog.remove();

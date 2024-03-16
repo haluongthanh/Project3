@@ -79,7 +79,11 @@ const productSchema = new mongoose.Schema({
             ref: "User"
         }
     },
-    discontinued: { Boolean, default: false }
+    productStatus: {
+        type: String,
+        enum: ['active', 'pause'],
+        default: 'pause'
+    }
 }, {
     timestamps: true
 })

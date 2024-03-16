@@ -4,7 +4,7 @@ import {useSelector,useDispatch} from 'react-redux';
 import {toast} from 'react-toastify';
 import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
 
-import {Box, Typography,TextField, Button,Grid,FormControl,InputLabel,Select,MenuItem} from '@mui/material';
+import {Box, Typography, TextField, Button, TextareaAutosize, Grid,  MenuItem, FormControl, Select, InputLabel} from '@mui/material';
 import UpdateIcon from '@mui/icons-material/Update';
 import { brandDetails, resetMutationResult, selectBrandDetails, selectBrandMutationResult, updateBrand } from '../../../redux/features/brandSlice';
 
@@ -15,14 +15,14 @@ const UpdateBrand = () => {
 
     const [title,setTitle]=useState('');
     const [description,setDescription]=useState('');
-    const [discontinued,setDiscontinued]=useState('')
+    const [brandStatus,setBrandStatus]=useState('');
 
     const {loading, brand}=useSelector(selectBrandDetails);
     const {loading:isUdating, success}=useSelector(selectBrandMutationResult);
 
     const handleSubmit=(e)=>{
         e.preventDefault();
-        const jsonData={title,description,discontinued};
+        const jsonData={title,description,brandStatus};
         dispatch(updateBrand({id,jsonData,toast}));
     }
 
@@ -36,7 +36,7 @@ const UpdateBrand = () => {
     useEffect(() => {
         if(brand)
         {
-            setDiscontinued(brand?.discontinued)
+            setBrandStatus(brand?.brandStatus)
             setTitle(brand.title);
             setDescription(brand.description);
         }
@@ -76,12 +76,11 @@ const UpdateBrand = () => {
                     <Select required
                             labelId='status'
                             id='status'
-                            value={discontinued}
+                            value={brandStatus}
                             label='status'
-                            onChange={(e=>setDiscontinued(e.target.value))}>
-
-                                <MenuItem value='true'>Block</MenuItem>
-                                <MenuItem value='false'>Active</MenuItem>
+                            onChange={(e=>setBrandStatus(e.target.value))}> 
+                                <MenuItem value='pause'>Pause</MenuItem>
+                                <MenuItem value='active'>Active</MenuItem>
                     </Select>
                 </FormControl>
             </Grid>

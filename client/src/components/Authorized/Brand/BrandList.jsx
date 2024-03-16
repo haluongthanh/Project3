@@ -1,18 +1,18 @@
 import React,{useEffect} from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import {useDispatch,useSelector} from 'react-redux';
-import {deleteBrand, getBrands, resetMutationResult, selectAllBrands, selectBrandMutationResult} from '../../../redux/features/brandSlice';
+import {deleteBrand, getBrandsAuthorizeRole, resetMutationResult, selectAllBrandAuthorizeRole, selectBrandMutationResult} from '../../../redux/features/brandSlice';
 import {toast} from 'react-toastify';
 import {Link} from 'react-router-dom';
 
 import {Box, Typography,IconButton, Tooltip} from '@mui/material';
 import DeleteForeeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
-import BoxShadowLoader from '../../../components/Skeletons/BoxShadowLoader';
+import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
 
 const BrandList = () => {
     const dispatch=useDispatch();
-    const {loading, brands}=useSelector(selectAllBrands);
+    const {loading, brands}=useSelector(selectAllBrandAuthorizeRole);
     const {success} = useSelector(selectBrandMutationResult);
 
     const deleteHandler=(id)=>{
@@ -22,6 +22,7 @@ const BrandList = () => {
     const columns=[
         {field:'title', headerName:'Brands', headerClassName:'gridHeader',flex:1,minWidth:170},
         {field:'description', headerName:'Description', headerClassName:'gridHeader',flex:1.5,minWidth:250},
+        { field: 'status', headerName: 'status', headerClassName: 'gridHeader', flex: 1.5, minWidth: 250 },
         {
             field:'actions', 
             headerName:'Actions', 
@@ -57,14 +58,15 @@ const BrandList = () => {
         rows.push({
             id:brand._id,
             title:brand.title,
-            description:brand.description
+            description:brand.description,
+            status:brand?.brandStatus
         })
     });
     useEffect(() => {
         if(success){
             dispatch(resetMutationResult());
         } 
-        dispatch(getBrands({toast}))
+        dispatch(getBrandsAuthorizeRole({toast}))
     }, [dispatch,success])
     
   return (

@@ -1,7 +1,7 @@
 import React,{useEffect} from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import {useDispatch,useSelector} from 'react-redux';
-import {deleteCategory, getCategories, resetMutationResult, selectAllCategories, selectCategoryMutationResult} from '../../../redux/features/categorySlice';
+import {deleteCategory, getCategoriesAuthorizeRole, resetMutationResult, selectAllCategoriesAuthorizeRole, selectCategoryMutationResult} from '../../../redux/features/categorySlice';
 import {toast} from 'react-toastify';
 import {Link} from 'react-router-dom';
 
@@ -13,9 +13,10 @@ import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
 const CategoryList = () => {
 
     const dispatch=useDispatch();
-    const {loading, categories}=useSelector(selectAllCategories);
+    
+    const { loading, categories } = useSelector(selectAllCategoriesAuthorizeRole);
     const {success} = useSelector(selectCategoryMutationResult);
-
+   
     const deleteHandler=(id)=>{
         dispatch(deleteCategory({id,toast}));
     }
@@ -23,6 +24,8 @@ const CategoryList = () => {
     const columns=[
         {field:'title', headerName:'Categories', headerClassName:'gridHeader',flex:1,minWidth:170},
         {field:'description', headerName:'Description', headerClassName:'gridHeader',flex:1.5,minWidth:250},
+        { field: 'status', headerName: 'status', headerClassName: 'gridHeader', flex: 1.5, minWidth: 250 },
+
         {
             field:'actions', 
             headerName:'Actions', 
@@ -58,14 +61,15 @@ const CategoryList = () => {
         rows.push({
             id:category._id,
             title:category.title,
-            description:category.description
+            description:category.description,
+            status:category?.categoryStatus
         })
     });
     useEffect(() => {
         if(success){
             dispatch(resetMutationResult());
         } 
-        dispatch(getCategories({toast}))
+        dispatch(getCategoriesAuthorizeRole({toast}))
     }, [dispatch,success])
     
   return (
