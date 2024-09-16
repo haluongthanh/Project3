@@ -7,14 +7,14 @@ const router = express.Router();
 
 
 router.route('/brands')
-    .post(isAuthenticated, authorizeRoles('admin'), addBrand)
+    .post(isAuthenticated, authorizeRoles('admin',  'manage'), addBrand)
     .get(getBrands);
 
 router.route('/brands/:id')
     .get(getBrandDetails)
-    .put(isAuthenticated, authorizeRoles('admin'), updateBrand)
-    .delete(isAuthenticated, authorizeRoles('admin'), deleteBrand);
+    .put(isAuthenticated, authorizeRoles('admin',  'manage'), updateBrand)
+    .delete(isAuthenticated, authorizeRoles('admin',  'manage'), deleteBrand);
 
 
-router.route('/athorized/brands').get(isAuthenticated, authorizeRoles('admin', 'seller'), getBrandsAuthorizeRole);
+router.route('/athorized/brands').get(isAuthenticated, authorizeRoles('admin',  'manage', ), getBrandsAuthorizeRole);
 module.exports = router;

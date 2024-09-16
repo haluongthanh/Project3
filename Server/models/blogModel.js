@@ -10,10 +10,15 @@ const blogSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        reuired: [true, 'Plaese enter blog description.']
+        required: [true, 'Plaese enter blog description.']
     },
     ImageURL: {
         url: { type: String }
+    },
+    blogCategory: {
+        type: mongoose.Schema.ObjectId,
+        ref: "blogCategory",
+        required: [true, 'Please select a blog.']
     },
     addedBy: {
         type: mongoose.Schema.ObjectId,
@@ -23,10 +28,16 @@ const blogSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "User",
     },
-    blogStatus: {
+    Status: {
         type: String,
         enum: ['active', 'pause'],
         default: 'pause'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
-})
+},{
+    timestamps: true 
+});
 module.exports = mongoose.model('Blog', blogSchema)

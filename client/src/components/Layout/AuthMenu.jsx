@@ -57,7 +57,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const AuthMenu = () => {
     const dispatch=useDispatch();
-    const {user,accessToken} =useSelector(selectLoggedInUser);
+    const {user,accessToken,error} =useSelector(selectLoggedInUser);
     let role;
     if(accessToken){
       const {UserInfo}=jwtDecode(accessToken);
@@ -73,10 +73,9 @@ const AuthMenu = () => {
     };
 
     const navigate=useNavigate();
-
     const auth=()=>navigate('/auth');
-    const dashboard=()=>navigate('/authorized/dashboard');
-    const orders=()=>navigate('/profile');
+    const dashboard=()=>window.location.href='/authorized/dashboard';
+    const orders=()=>navigate('/profile#orders');
     const profile=()=>navigate('/profile');
     const logoutUser=()=>{
       dispatch(logout({toast}));
@@ -165,21 +164,21 @@ const AuthMenu = () => {
               <ListItemIcon>
                 <SummarizeIcon fontSize="small" />
               </ListItemIcon>
-              Orders
+              Đơn Hàng Của Tôi
             </MenuItem>
             <Divider/>
             <MenuItem onClick={profile}>
               <ListItemIcon>
                 <PersonIcon fontSize="small" />
               </ListItemIcon>
-              Profile
+              Thông Tin Tài Khoản
             </MenuItem>
             <Divider/>
             <MenuItem onClick={logoutUser}>
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>
-              Logout
+              Đăng Xuất
             </MenuItem>
           </Menu>
       :
@@ -222,7 +221,7 @@ const AuthMenu = () => {
           <ListItemIcon>
             <LoginIcon fontSize="small" />
           </ListItemIcon>
-          Login or Registration
+          Đăng Nhập hoặc Đăng Ký
         </MenuItem>
         
       </Menu>

@@ -8,6 +8,7 @@ import { IMAGE_BASEURL } from '../../../constants/baseURL';
 
 import {Box, Typography, Grid, Divider, FormControl, InputLabel, Select,MenuItem, Button} from '@mui/material';
 import UpdateIcon from '@mui/icons-material/Update';
+import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
 
 const UpdateRole = () => {
     const {id}=useParams();
@@ -23,10 +24,6 @@ const UpdateRole = () => {
     const submitHandler=(e)=>{
         e.preventDefault();
 
-        if(role==='seller' && store===''){
-            toast.error('Please select a store');
-            return;
-        }
         const jsonData={
             roles:role,store,blocked
         }
@@ -47,7 +44,9 @@ const UpdateRole = () => {
        
     }, [user])
     
-    
+    if(user==undefined){
+        return <BoxShadowLoader/>
+    }
   return (
     <Box sx={{maxWidth:'550px', m:'0 auto', display:'flex', flexGrow:1, alignItems:'center'}}>
         <Box>
@@ -64,19 +63,19 @@ const UpdateRole = () => {
 
             <Grid container sx={{alignItems:'center',mt:1}}>
 
-            <Grid item xs={6}><Typography variant='button' component='div'>User's Name</Typography></Grid>
+            <Grid item xs={6}><Typography variant='button' component='div'>Tên</Typography></Grid>
             <Grid item xs={6}><Typography variant='button' component='div'>{user?.name}</Typography></Grid>
 
-            <Grid item xs={6}><Typography variant='button' component='div'>User's Email</Typography></Grid>
+            <Grid item xs={6}><Typography variant='button' component='div'>Email</Typography></Grid>
             <Grid item xs={6}><Typography variant='button' component='div'>{user?.email}</Typography></Grid>
 
-            <Grid item xs={6}><Typography variant='button' component='div'>Joined date:</Typography></Grid>
+            <Grid item xs={6}><Typography variant='button' component='div'>Ngày tham gia:</Typography></Grid>
             <Grid item xs={6}><Typography variant='button' component='div'>{String(user?.createdAt).substr(0,10)}</Typography></Grid>
 
-            <Grid item xs={6}><Typography variant='button' component='div'>User's Role</Typography></Grid>
+            <Grid item xs={6}><Typography variant='button' component='div'> Role</Typography></Grid>
             <Grid item xs={6}><Typography variant='button' component='div'>{user?.roles}</Typography></Grid>
 
-            <Grid item xs={6}><Typography variant='button' component='div'>User's Status</Typography></Grid>
+            <Grid item xs={6}><Typography variant='button' component='div'> Trạng Thái</Typography></Grid>
             <Grid item xs={6}><Typography variant='button' component='div'>{user?.blocked?'Blocked':'Active'}</Typography></Grid>
 
             </Grid>
@@ -85,11 +84,11 @@ const UpdateRole = () => {
 
             <Grid container sx={{alignItems:'center', mt:3}}>
 
-            <Grid item xs={6}><Typography variant='button' component='div'>Change User's Status</Typography></Grid>
+            <Grid item xs={6}><Typography variant='button' component='div'>Thay đổi trạng thái của người dùng</Typography></Grid>
 
             <Grid item xs={6}>
                 <FormControl sx={{width:'100%'}}>
-                    <InputLabel id='status'>Status</InputLabel>
+                    <InputLabel id='status'>Trạng Thái</InputLabel>
                     <Select required
                             labelId='status'
                             id='status'
@@ -107,7 +106,7 @@ const UpdateRole = () => {
 
             <Grid container sx={{alignItems:'center', mt:3}}>
 
-            <Grid item xs={6}><Typography variant='button' component='div'>Change User's Role</Typography></Grid>
+            <Grid item xs={6}><Typography variant='button' component='div'>Thay đổi vai trò của người dùng</Typography></Grid>
 
             <Grid item xs={6}>
                 <FormControl sx={{width:'100%'}}>
@@ -120,7 +119,8 @@ const UpdateRole = () => {
                             onChange={(e=>setRole(e.target.value))}>
 
                                 <MenuItem value='admin'>Admin</MenuItem>
-                                <MenuItem value='seller'>Seller</MenuItem>
+                                <MenuItem value='manage'>Manage</MenuItem>
+                                <MenuItem value='staff'>Staff</MenuItem>
                                 <MenuItem value='user'>User</MenuItem>
                     </Select>
                 </FormControl>

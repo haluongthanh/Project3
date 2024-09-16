@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosPublic } from '../axiosPublic';
 import axiosPrivate from '../axiosPrivate';
 
-export const addCategory = createAsyncThunk('category/addCategory', async({ jsonData, toast }, { rejectWithValue }) => {
+export const addCategory = createAsyncThunk('category/addCategory', async ({ formData, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPrivate.post(`/categories`, jsonData, { headers: { 'Content-type': 'multipart/form-data' } });
-        toast.success('Successfully added new category.');
+        const { data } = await axiosPrivate.post(`/categories`, formData, { headers: { 'Content-type': 'multipart/form-data' } });
+        toast.success('Đã thêm danh mục mới thành công.');
         return data;
 
     } catch (error) {
@@ -13,7 +13,7 @@ export const addCategory = createAsyncThunk('category/addCategory', async({ json
         return rejectWithValue(error.response.data.message);
     }
 })
-export const getCategories = createAsyncThunk('category/getCategories', async({ toast }, { rejectWithValue }) => {
+export const getCategories = createAsyncThunk('category/getCategories', async ({ toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPublic.get(`/categories`);
         return data;
@@ -23,20 +23,30 @@ export const getCategories = createAsyncThunk('category/getCategories', async({ 
         return rejectWithValue(error.response.data.message);
     }
 })
-
-export const getCategoriesAuthorizeRole = createAsyncThunk('category/getCategoriesAuthorizeRole', async({ toast }, { rejectWithValue }) => {
+export const getCategoriesAuthorizeRole = createAsyncThunk('category/getCategoriesAuthorizeRole', async ({limit, search, currentPage, startDate, endDate, status, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPrivate.get('/athorized/categorys');
+        let query = '';
+        if (search) query += `keyword=${search}&`;
+        if (currentPage) query += `page=${currentPage}&`;
+        if (limit) query += `limit=${limit}&`;
+
+        if (startDate) query += `createdAt[gte]=${startDate}T00:00:00.000Z&`;
+        if (endDate) query += `createdAt[lte]=${endDate}T23:59:59.999Z&`;
+        if (status) query += `status=${status}&`;
+        query = query.endsWith('&') ? query.slice(0, -1) : query;
+        const { data } = await axiosPrivate.get(`/athorized/categorys?${query}`);
         return data;
+
     } catch (error) {
         toast.error(error.response.data.message);
         return rejectWithValue(error.response.data.message);
     }
 })
-
-export const deleteCategory = createAsyncThunk('category/deleteCategory', async({ id, toast }, { rejectWithValue }) => {
+export const deleteCategory = createAsyncThunk('category/deleteCategory', async ({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.delete(`/categories/${id}`);
+        toast.success('Đã xóa danh mục thành công');
+
         return data;
 
     } catch (error) {
@@ -45,7 +55,7 @@ export const deleteCategory = createAsyncThunk('category/deleteCategory', async(
     }
 })
 
-export const categoryDetails = createAsyncThunk('category/categoryDetails', async({ id, toast }, { rejectWithValue }) => {
+export const categoryDetails = createAsyncThunk('category/categoryDetails', async ({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPublic.get(`/categories/${id}`);
         return data;
@@ -56,10 +66,11 @@ export const categoryDetails = createAsyncThunk('category/categoryDetails', asyn
     }
 })
 
-export const updateCategory = createAsyncThunk('category/updateCategory', async({ id, jsonData, toast }, { rejectWithValue }) => {
+export const updateCategory = createAsyncThunk('category/updateCategory', async ({ id, formData, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPrivate.put(`/categories/${id}`, jsonData, { headers: { 'Content-type': 'multipart/form-data' } });
-        toast.success('Category updated.')
+
+        const { data } = await axiosPrivate.put(`/categories/${id}`, formData, { headers: { 'Content-type': 'multipart/form-data' } });
+        toast.success('Đã cập nhật danh mục  thành công')
         return data;
     } catch (error) {
         toast.error(error.response.data.message);
@@ -70,10 +81,8 @@ const categorySlice = createSlice({
     name: 'category',
     initialState: {
         mutationResult: { success: false },
-        categorylist: {},
-        categoryDetails: {},
-        categorylist1: {},
-
+        categorylist: { categories: [] },
+        categoryDetails: {}
     },
     reducers: {
         resetMutationResult: (state) => {
@@ -105,17 +114,19 @@ const categorySlice = createSlice({
             state.categorylist.loading = false;
             state.categorylist.error = action.payload;
         },
-        // get all category list by role
         [getCategoriesAuthorizeRole.pending]: (state, action) => {
-            state.categorylist1.loading = true;
+            state.categorylist.loading = true;
         },
         [getCategoriesAuthorizeRole.fulfilled]: (state, action) => {
-            state.categorylist1.loading = false;
-            state.categorylist1.categories = action.payload.categories;
+            state.categorylist.loading = false;
+            state.categorylist.categories = action.payload.categories;
+            state.categorylist.categoryCount = action.payload.categoryCount;
+            state.categorylist.resultPerPage = action.payload.resultPerPage;
+            state.categorylist.filteredCategiriesCount = action.payload.filteredCategiriesCount;
         },
         [getCategoriesAuthorizeRole.rejected]: (state, action) => {
-            state.categorylist1.loading = false;
-            state.categorylist1.error = action.payload;
+            state.categorylist.loading = false;
+            state.categorylist.error = action.payload;
         },
         //delete a category
         [deleteCategory.pending]: (state, action) => {
@@ -159,7 +170,6 @@ const categorySlice = createSlice({
 export const selectCategoryMutationResult = (state) => state.category.mutationResult;
 export const selectAllCategories = (state) => state.category.categorylist;
 export const selectCategoryDetails = (state) => state.category.categoryDetails;
-export const selectAllCategoriesAuthorizeRole = (state) => state.category.categorylist1;
 export const { resetMutationResult } = categorySlice.actions;
 
 export default categorySlice.reducer;

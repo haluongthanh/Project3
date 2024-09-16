@@ -14,3 +14,19 @@
         display: none;
     }
 }
+
+.page-wrapper>.container-fluid>.row {
+    background-color: white;
+}
+
+.scroll-sidebar {
+    height: 100vh;
+    /* Hoặc một giá trị cụ thể */
+    overflow-y: auto;
+    /* Kích hoạt thanh cuộn dọc */
+    overflow-x: hidden;
+    /* Ẩn thanh cuộn ngang nếu không cần thiết */
+}
+.btn-danger {
+    margin: 0px;
+}

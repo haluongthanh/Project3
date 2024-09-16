@@ -3,9 +3,9 @@ const { processPayment, vnpay_ipn, vnpay_return } = require('../controllers/paym
 const { isAuthenticated, authorizeRoles } = require('../middleware/auth');
 
 const router = express.Router();
-router.route('/create-payment-intent').post(isAuthenticated, processPayment)
-router.route('/vnpay_ipn').get(isAuthenticated, vnpay_ipn)
-router.route('/vnpay_return').get(isAuthenticated, vnpay_return)
+router.route('/create-payment-intent').post(processPayment)
+    // router.route('/vnpay_ipn').get(isAuthenticated, vnpay_ipn)
+router.route('/vnpay_return').get(vnpay_return)
 
 
 module.exports = router;

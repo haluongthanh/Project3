@@ -1,0 +1,205 @@
+.main-header .main-header--top .row-header>div {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.main-header .main-header--top .main-header--right {
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+.main-header .main-header--right {
+    position: relative;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: flex-end;
+    -webkit-justify-content: flex-end;
+}
+
+.main-header .main-header--top .main-header--search {
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+.main-header .main-header--top .header-action-item {
+    margin-left: 8px;
+    align-self: center;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box .searchform-product {
+    position: relative;
+    z-index: 9;
+}
+
+@media (min-width: 992px) {
+    .search-box .searchform-product .input-search {
+        font-size: 16px;
+        height: 42px;
+    }
+}
+
+.search-box .searchform-product .input-search {
+    padding: 8px 50px 8px 15px;
+    height: 36px;
+    background: #fff;
+    border: 1px solid #fff;
+    font-size: 12px;
+    margin: 0;
+    width: 100%;
+    display: inline-block;
+    border-radius: 4px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.search-box .searchform-product .btn-search {
+    position: absolute;
+    padding: 0;
+    top: 0px;
+    bottom: 0;
+    right: 0px;
+    border: 0;
+    box-shadow: none;
+    width: 36px;
+    background: transparent;
+    transition: opacity 150ms linear;
+    margin: 0px;
+}
+
+@media (min-width: 992px) {
+    .search-box .btn-search {
+        width: 40px;
+    }
+}
+
+[type=button]:not(:disabled),
+[type=reset]:not(:disabled),
+[type=submit]:not(:disabled),
+button:not(:disabled) {
+    cursor: pointer;
+}
+
+
+
+[type=button],
+[type=reset],
+[type=submit],
+button {
+    -webkit-appearance: button;
+}
+
+.search-box .searchform-product .btn-search svg {
+    width: 16px;
+    height: 100%;
+    display: block;
+    margin: auto;
+    fill: #fff;
+}
+
+@media (min-width: 992px) {
+    .search-box .btn-search svg {
+        width: 24px;
+    }
+}
+
+svg {
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.search-box .smart-search-wrapper {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    right: 0;
+    z-index: 8;
+    background: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
+    padding-left: 16px;
+    padding-right: 16px;
+    width: 100%;
+    border-radius: 4px;
+    overflow-y: scroll;
+}
+
+.search-box .smart-search-wrapper .resultsContent {
+    height: 400px;
+}
+
+.search-box .item-ult {
+    padding: 12px 0;
+    border-bottom: 1px solid #ECECEC;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.search-box .item-ult .thumbs {
+    width: 40px;
+    display: inline-block;
+    text-align: right;
+}
+
+.search-box .item-ult .thumbs a {
+    display: block;
+    border: 1px solid #ECECEC;
+}
+
+.search-box .item-ult .title {
+    width: calc(100% - 40px);
+    padding-right: 5px;
+    line-height: 20px;
+    position: relative;
+    margin-top: 0px !important;
+}
+
+.search-box .item-ult .title a {
+    font-size: 13px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: pre;
+    display: block;
+    margin: 0 0 5px;
+    color: black;
+}
+
+.search-box .item-ult .title p {
+    line-height: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    float: left;
+    margin: 0;
+    color: red;
+}
+
+a:hover,
+a:focus {
+    color: red;
+    text-decoration: none;
+    outline: none;
+}
+
+.search-box .smart-search-wrapper .resultsContent.nodata {
+    height: auto;
+}
+
+.search-box .dataEmpty {
+    text-align: center;
+    padding: 16px 0;
+    margin-bottom: 0;
+    color: black;
+}
+
+.search-box .item-ult .title p del {
+    font-size: 11px;
+    font-weight: 400;
+    margin-left: 7px;
+    color: #797979;
+}

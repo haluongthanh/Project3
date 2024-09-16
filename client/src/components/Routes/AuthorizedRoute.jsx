@@ -1,48 +1,75 @@
-
-import {useSelector} from 'react-redux';
-import {useNavigate, Outlet, Navigate} from 'react-router-dom';
-
-import {selectLoggedInUser} from '../../redux/features/authSlice';
+import { useSelector } from 'react-redux';
+import { useNavigate, Outlet } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { selectLoggedInUser } from '../../redux/features/authSlice';
 import jwtDecode from 'jwt-decode';
-
-import {Box,Typography} from '@mui/material';
-
-import TreeMenu from './Menus/TreeMenu';
 import './Authorized.css';
-import DrawerTreeMenu from './Menus/DrawerTreeMenu';
+import './headerAuth.css';
+import HeaderAuth from './HeaderAuth';
+import Admin from './menu/Admin';
+import Manage from './menu/Manage';
+import Staff from './menu/Staff';
 
 const AuthorizedRoute = () => {
-    const navigate=useNavigate();
-    const {accessToken}=useSelector(selectLoggedInUser);
-    let role;
-    const {UserInfo}=jwtDecode(accessToken);
-    role=UserInfo.roles[0].toString();
-    if(role==='admin' || role==='seller'){
+    const navigate = useNavigate();
+    const { user, accessToken } = useSelector(selectLoggedInUser);
+    let role = '';
+    if (accessToken) {
+        const { UserInfo } = jwtDecode(accessToken);
+        role = UserInfo.roles[0].toString();
+    }
+
+    const [isSidebarMini, setIsSidebarMini] = useState(window.innerWidth <= 1167);
+    const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSidebarMini(window.innerWidth <= 1167);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const toggleSidebar = () => {
+        setIsSidebarVisible(!isSidebarVisible);
+    };
+
+    if (role === 'admin' || role === 'manage' || role === 'staff') {
         return (
-            <>
-            <Box className='adminMenu' sx={{background:'#1976d2', display:'flex', color:'#fff',p:1}}>
-                <Box className='mTreeMenu' sx={{minWidth:'225px',mr:1}}>
-                    <DrawerTreeMenu/>
-                </Box>
-                <Box sx={{flexGrow:1}}>
-                    <Typography component='div' variant='h6' sx={{textAlign:'center'}}>Dashboard</Typography>
-                </Box>
-            </Box>
-            <Box className='adminMenu' sx={{display:'flex',flexGrow:1}}>
-                <Box className='dTreeMenu' sx={{background:'#1976d2',minWidth:'225px',mr:1}}>
-                    <TreeMenu/>                    
-                </Box>
-                <Box sx={{flexGrow:1}}>
-                    <Box sx={{m:'0 auto',p:1}}>
-                        <Outlet/>
-                    </Box>
-                </Box>
-            </Box>
-            </>
-        )
-    }else{
-        return <Navigate to='/unauthorized'/>
+            <div
+                id="main-wrapper"
+                data-theme="light"
+                data-layout="vertical"
+                data-navbarbg="skin6"
+                data-sidebartype={isSidebarMini ? "mini-sidebar" : "full"}
+                data-sidebar-position="fixed"
+                data-header-position="fixed"
+                data-boxed-layout="full"
+                className={`mini-sidebar ${isSidebarVisible ? "show-sidebar" : ""}`}
+            >
+                <HeaderAuth toggleSidebar={toggleSidebar} user={user} role={role} />
+                {role === 'admin' ? (
+                    <Admin />
+                ) : role === 'manage' ? (
+                    <Manage />
+                ) : role === 'staff' ? (
+                    <Staff />
+                ) : null}
+                <div className="page-wrapper" style={{ display: 'block' }}>
+                    <div className="container-fluid">
+                        <div className='row'>
+                             <Outlet />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    } else {
+       
+        return <a href='/unauthorized' />
     }
 }
 
-export default AuthorizedRoute
+export default AuthorizedRoute;

@@ -1,89 +1,166 @@
-import React,{useEffect} from 'react';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import {useDispatch,useSelector} from 'react-redux';
-import {deleteCategory, getCategoriesAuthorizeRole, resetMutationResult, selectAllCategoriesAuthorizeRole, selectCategoryMutationResult} from '../../../redux/features/categorySlice';
-import {toast} from 'react-toastify';
-import {Link} from 'react-router-dom';
-
-import {Box, Typography,IconButton, Tooltip} from '@mui/material';
-import DeleteForeeverIcon from '@mui/icons-material/DeleteForever';
-import EditIcon from '@mui/icons-material/Edit';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteCategory, resetMutationResult, getCategoriesAuthorizeRole, selectAllCategories, selectCategoryMutationResult } from '../../../redux/features/categorySlice';
+import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import Pagination from '../../../utility/Pagination';
+import { BASEURL } from '../../../constants/baseURL';
 import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
-
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 const CategoryList = () => {
+    const dispatch = useDispatch();
+    const { filteredCategiriesCount, resultPerPage, categories, loading } = useSelector(selectAllCategories);
+    const { success } = useSelector(selectCategoryMutationResult);
 
-    const dispatch=useDispatch();
-    
-    const { loading, categories } = useSelector(selectAllCategoriesAuthorizeRole);
-    const {success} = useSelector(selectCategoryMutationResult);
-   
-    const deleteHandler=(id)=>{
-        dispatch(deleteCategory({id,toast}));
-    }
-
-    const columns=[
-        {field:'title', headerName:'Categories', headerClassName:'gridHeader',flex:1,minWidth:170},
-        {field:'description', headerName:'Description', headerClassName:'gridHeader',flex:1.5,minWidth:250},
-        { field: 'status', headerName: 'status', headerClassName: 'gridHeader', flex: 1.5, minWidth: 250 },
-
-        {
-            field:'actions', 
-            headerName:'Actions', 
-            headerClassName:'gridHeader',
-            flex:.5,
-            minWidth:80,
-            type:'number',
-            sortable:false,
-            renderCell:(params)=>{
-                return (
-                    <>
-                        <Link to={`/authorized/category/${params.getValue(params.id,'id')}`}>
-                        <Tooltip title='Edit' placement='top'>
-                            <EditIcon sx={{width:'30px', height:'30px', color:'#1976d2'}} />
-                        </Tooltip>
-                        </Link>
-
-                        <Tooltip title='Delete' placement='top'>
-                            <IconButton color='error' 
-                                        component='span' 
-                                        onClick={()=>deleteHandler(params.getValue(params.id,'id'))}>
-                                <DeleteForeeverIcon sx={{width:'30px', height:'30px'}}/>
-                            </IconButton>
-                        </Tooltip>
-
-                    </>
-                )
-            }
-        }
-    ]
-    const rows=[];
-    categories && categories.forEach(category => {
-        rows.push({
-            id:category._id,
-            title:category.title,
-            description:category.description,
-            status:category?.categoryStatus
-        })
+    const [filters, setFilters] = useState({
+        search: '',
+        currentPage: 1,
+        startDate: '',
+        endDate: '',
+        status: ''
     });
-    useEffect(() => {
-        if(success){
-            dispatch(resetMutationResult());
-        } 
-        dispatch(getCategoriesAuthorizeRole({toast}))
-    }, [dispatch,success])
-    
-  return (
-    <Box style={{displya:'flex', flexDirection:'column', width:'100%', marginTop:'15px', textAlign:'center'}}>
-        <Typography component='h1' variant='h5'sx={{m:4}}>Full list of categories</Typography>
-        {loading ? <BoxShadowLoader/>:
-        <DataGrid rows={rows}
-                    columns={columns}
-                    components={{Toolbar:GridToolbar}}                    
-                    autoHeight
-        />
-        }
-    </Box>
-  )
-}
 
-export default CategoryList
+    useEffect(() => {
+        if (success) {
+            dispatch(resetMutationResult())
+        }
+        dispatch(getCategoriesAuthorizeRole({ ...filters, toast }));
+    }, [dispatch, success, filters]);
+
+    const handleFilterChange = (e) => {
+        setFilters({
+            ...filters,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handlePageChange = (page) => {
+        setFilters({
+            ...filters,
+            currentPage: page
+        });
+    };
+
+    const handleDelete = (id) => {
+        dispatch(deleteCategory({ id, toast }));
+    };
+    const translateStatus = (status) => {
+        switch (status) {
+            case 'pause':
+                return 'Tạm Dừng';
+            case 'active':
+                return 'Hoạt Động';
+
+            default:
+                return status;
+        }
+    };
+    const totalPages = Math.ceil(filteredCategiriesCount / resultPerPage);
+    if (categories == undefined || loading == undefined) {
+        return <BoxShadowLoader />
+    }
+    return (
+        <div className="container mt-4">
+            <h1 className="mb-4 text-center">Danh Sách Danh Mục</h1>
+
+            <div className="mb-3">
+                <div className="row">
+                    <div className="col-md-3">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search"
+                            name="search"
+                            value={filters.search}
+                            onChange={handleFilterChange}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <input
+                            type="date"
+                            className="form-control"
+                            placeholder="Start Date"
+                            name="startDate"
+                            value={filters.startDate}
+                            onChange={handleFilterChange}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <input
+                            type="date"
+                            className="form-control"
+                            placeholder="End Date"
+                            name="endDate"
+                            value={filters.endDate}
+                            onChange={handleFilterChange}
+                        />
+                    </div>
+                    <div className="col-md-2">
+                        <select
+                            className="form-control"
+                            name="status"
+                            value={filters.status}
+                            onChange={handleFilterChange}
+                        >
+                            <option value="">Trạng Thái</option>
+                            <option value="active">Hoạt Động</option>
+                            <option value="pause">Tạm Dừng</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            {loading && <div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div>}
+
+            {categories.length === 0 ? (
+                <div className="alert alert-info text-center" role="alert">
+                    Không Tìm Thấy Danh Mục.
+                </div>
+            ) : (
+                <>
+                    <div className='table-responsive'>
+
+                        <table className="table table-bordered">
+                            <thead>
+                                <tr className="table-secondary">
+                                    <th>Tiêu Đề</th>
+                                    <th>Ảnh</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {categories.map(category => (
+                                    <tr key={category._id}>
+                                        <td>{category.title}</td>
+                                        <td>
+                                            <img src={`${BASEURL}${category?.CategoryImg?.url}`} alt={category.title} style={{ width: '100px', height: 'auto' }} />
+                                        </td>
+                                        <td>{translateStatus(category.Status)}</td>
+                                        <td>
+                                            <Link to={`/authorized/category/${category._id}`} className="btn btn-primary">
+                                                < EditIcon />
+                                            </Link>
+                                            <button onClick={() => handleDelete(category._id)} className="btn btn-danger ms-2">
+                                                < DeleteForeverIcon />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <Pagination
+                        currentPage={filters.currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                </>
+            )}
+        </div>
+    );
+};
+
+export default CategoryList;

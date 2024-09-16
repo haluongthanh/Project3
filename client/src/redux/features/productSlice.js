@@ -2,37 +2,41 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosPublic } from '../axiosPublic';
 import axiosPrivate from '../axiosPrivate';
 
-export const getProducts = createAsyncThunk('product/getProducts', async({ search, currentPage, priceRange, category, ratingsfilter, toast }, { rejectWithValue }) => {
+export const getProducts = createAsyncThunk('product/getProducts', async ({ search, currentPage, priceRange,brand, category, ratingsfilter, sortbyPrice, toast }, { rejectWithValue }) => {
     try {
-        let key = 'keyword=' + search;
-        let page = '&page=' + currentPage;
-        let price = '&price[gte]=' + priceRange[0] + '&price[lte]=' + priceRange[1];
-        let cat = null;
-        if (category) {
-            cat = '&category=' + category;
-        } else {
-            cat = '';
+        let query = '';
+        if (search) query += `keyword=${search}&`;
+        if (currentPage) query += `page=${currentPage}&`;
+        if (priceRange) {
+            query += `price[gte]=${priceRange[0]}&price[lte]=${priceRange[1]}&`;
         }
-        let ratings = '';
-        if (ratingsfilter > 0 || ratingsfilter !== 'undefined') {
-            ratings = '&ratings[gte]=' + ratingsfilter;
+        if (category.length > 0) {
+            query += `category=${category.join(',')}&`; 
         }
+        if (brand.length>0) {
+            query += `brand=${brand.join(',')}&`; 
 
-        let productParams = key + page + price + cat + ratings;
+        }
+        if (ratingsfilter) query += `ratings[gte]=${ratingsfilter}&`;
+        if (sortbyPrice) query += `sortbyPrice=${sortbyPrice}&`;
 
-        const { data } = await axiosPrivate.get(`/products?${productParams}`);
+        query = query.endsWith('&') ? query.slice(0, -1) : query;
+        const { data } = await axiosPrivate.get(`/products?${query}`);
         return data;
 
     } catch (error) {
         toast.error(error.response.data.message);
         return rejectWithValue(error.response.data.message);
     }
-})
+});
 
-export const addProduct = createAsyncThunk('product/addProduct', async({ formData, toast }, { rejectWithValue }) => {
+
+
+export const addProduct = createAsyncThunk('product/addProduct', async ({ formData, toast }, { rejectWithValue }) => {
+
     try {
         const { data } = await axiosPrivate.post(`/products`, formData, { headers: { 'Content-type': 'multipart/form-data' } });
-        toast.success('Successfully added new product.');
+        toast.success('Đã thêm sản phẩm mới thành công.');
         return data;
 
     } catch (error) {
@@ -40,9 +44,19 @@ export const addProduct = createAsyncThunk('product/addProduct', async({ formDat
         return rejectWithValue(error.response.data.message);
     }
 })
-export const getProductsByAuthorizeRoles = createAsyncThunk('product/getProductsByAuthorizeRoles', async({ toast }, { rejectWithValue }) => {
+export const getProductsByAuthorizeRoles = createAsyncThunk('product/getProductsByAuthorizeRoles', async ({ search, currentPage, startDate, endDate, status, category, brand, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPrivate.get(`/athorized/products`);
+        let query = '';
+        if (search) query += `keyword=${search}&`;
+        if (currentPage) query += `page=${currentPage}&`;
+        if (startDate) query += `createdAt[gte]=${startDate}T00:00:00.000Z&`;
+        if (endDate) query += `createdAt[lte]=${endDate}T23:59:59.999Z&`;
+        if (status) query += `status=${status}&`;
+        if (category) query += `category=${category}&`;
+        if (brand) query += `brand=${brand}&`;
+        query = query.endsWith('&') ? query.slice(0, -1) : query;
+        console.log(query)
+        const { data } = await axiosPrivate.get(`/athorized/products?${query}`);
         return data;
 
     } catch (error) {
@@ -51,9 +65,21 @@ export const getProductsByAuthorizeRoles = createAsyncThunk('product/getProducts
     }
 })
 
-export const deleteProduct = createAsyncThunk('product/deleteProduct', async({ id, toast }, { rejectWithValue }) => {
+export const deleteProduct = createAsyncThunk('product/deleteProduct', async ({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.delete(`/products/${id}`);
+        toast.success('Đã xóa sản phẩm  thành công .');
+
+        return data;
+
+    } catch (error) {
+        toast.error(error.response.data.message);
+        return rejectWithValue(error.response.data.message);
+    }
+})
+export const deleteProductImg = createAsyncThunk('product/deleteProductImg', async ({ id, imageId, toast }, { rejectWithValue }) => {
+    try {
+        const { data } = await axiosPrivate.delete(`/products/${id}/image/${imageId}`);
         return data;
 
     } catch (error) {
@@ -62,7 +88,7 @@ export const deleteProduct = createAsyncThunk('product/deleteProduct', async({ i
     }
 })
 
-export const productDetails = createAsyncThunk('product/productDetails', async({ id, toast }, { rejectWithValue }) => {
+export const productDetails = createAsyncThunk('product/productDetails', async ({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPublic.get(`/products/${id}`);
         return data;
@@ -73,10 +99,10 @@ export const productDetails = createAsyncThunk('product/productDetails', async({
     }
 })
 
-export const updateProduct = createAsyncThunk('product/updateProduct', async({ id, formData, toast }, { rejectWithValue }) => {
+export const updateProduct = createAsyncThunk('product/updateProduct', async ({ id, formData, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.put(`/products/${id}`, formData, { headers: { 'Content-type': 'multipart/form-data' } });
-        toast.success('Product updated.')
+        toast.success('Đã cập nhật sản phẩm  thành công.')
         return data;
     } catch (error) {
         toast.error(error.response.data.message);
@@ -109,6 +135,7 @@ const productSlice = createSlice({
             state.productlist.products = [...state.productlist.products, ...action.payload.products];
             state.productlist.productCount = action.payload.productCount;
             state.productlist.resultPerPage = action.payload.resultPerPage;
+            state.productlist.price=action.payload.price;;
             state.productlist.filteredProductsCount = action.payload.filteredProductsCount;
         },
         [getProducts.rejected]: (state, action) => {
@@ -134,6 +161,10 @@ const productSlice = createSlice({
         [getProductsByAuthorizeRoles.fulfilled]: (state, action) => {
             state.productlist.loading = false;
             state.productlist.products = action.payload.products;
+            state.productlist.stock = action.payload.stock;
+            state.productlist.productCount = action.payload.productCount;
+            state.productlist.resultPerPage = action.payload.resultPerPage;
+            state.productlist.filteredProductsCount = action.payload.filteredProductsCount;
         },
         [getProductsByAuthorizeRoles.rejected]: (state, action) => {
             state.productlist.loading = false;
@@ -148,6 +179,17 @@ const productSlice = createSlice({
             state.mutationResult.success = action.payload.success;
         },
         [deleteProduct.rejected]: (state, action) => {
+            state.mutationResult.loading = false;
+            state.mutationResult.error = action.payload;
+        },
+        [deleteProductImg.pending]: (state, action) => {
+            state.mutationResult.loading = true;
+        },
+        [deleteProductImg.fulfilled]: (state, action) => {
+            state.mutationResult.loading = false;
+            state.mutationResult.success = action.payload.success;
+        },
+        [deleteProductImg.rejected]: (state, action) => {
             state.mutationResult.loading = false;
             state.mutationResult.error = action.payload;
         },

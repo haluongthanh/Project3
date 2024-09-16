@@ -10,7 +10,7 @@ const { isAuthenticated, authorizeRoles } = require('../middleware/auth');
 
 router.route('/blogs')
     .post(isAuthenticated,
-        authorizeRoles('admin'),
+        authorizeRoles('admin',  'manage','staff'),
         fileUpload({ createParentPath: true }),
         fileExtLimiter(['.png', '.jpg', '.jpeg', '.webp']),
         fileSizeLimiter, addBlog)
@@ -20,12 +20,12 @@ router.route('/blogs')
 router.route('/blogs/:id')
     .get(getBlogDetails)
     .put(isAuthenticated,
-        authorizeRoles('admin'),
+        authorizeRoles('admin',  'manage','staff'),
         fileUpload({ createParentPath: true }),
         fileExtLimiter(['.png', '.jpg', '.jpeg', '.webp']),
         fileSizeLimiter, updateBlog)
-    .delete(isAuthenticated, authorizeRoles('admin'), deleteBlog);
+    .delete(isAuthenticated, authorizeRoles('admin',  'manage'), deleteBlog);
 
-router.route('/athorized/blogs').get(isAuthenticated, authorizeRoles('admin', 'seller'), getBlogsAuthorizeRole);
+router.route('/athorized/blogs').get(isAuthenticated, authorizeRoles('admin',  'manage','staff' ), getBlogsAuthorizeRole);
 
 module.exports = router;

@@ -8,12 +8,15 @@ import CartReducer from './redux/features/cartSlice';
 import ReviewReducer from './redux/features/reviewSlice';
 import ShippingReducer from './redux/features/shippingSlice';
 import OrderReducer from './redux/features/orderSlice';
-import BlogReducer from './redux/features/blogSlice'
-
+import blogReducer from './redux/features/blogSlice';
+import blogVCategoryReducer from './redux/features/blogCategorySlice';
+import websiteReducer from './redux/features/websiteSlice'
+import logReducer from './redux/features/logSlice'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import storage from 'redux-persist/lib/storage';
 import { useReducer } from 'react';
 
+//oj
 const persistConfig = {
     key: 'root',
     version: 1,
@@ -29,7 +32,10 @@ const rootReducer = combineReducers({
     review: ReviewReducer,
     shipping: ShippingReducer,
     order: OrderReducer,
-    blog: BlogReducer,
+    blog: blogReducer,
+    blogCategory: blogVCategoryReducer,
+    web: websiteReducer,
+    log:logReducer
 })
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 export const store = configureStore({

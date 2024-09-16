@@ -1,7 +1,7 @@
 @media (min-width: 992px) {
-    .left-sidebar,
+    .left-sidebar-profile,
     .right-main,
-    .layout-account .left-sidebar,
+    .layout-account .left-sidebar-profile,
     .layout-account .right-main {
         height: 100%;
     }
@@ -40,7 +40,11 @@
     padding-bottom: 20px;
 }
 
-.left-sidebar {
+#profile>.left-sidebar {
+    position: relative;
+}
+
+.left-sidebar-profile {
     background: #ffffff;
     border-radius: 4px;
 }

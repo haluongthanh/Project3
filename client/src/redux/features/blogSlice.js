@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosPublic } from '../axiosPublic';
 import axiosPrivate from '../axiosPrivate';
 
-export const addBlog = createAsyncThunk('blog/addBlog', async({ jsonData, toast }, { rejectWithValue }) => {
+export const addBlog = createAsyncThunk('blog/addBlog', async ({ jsonData, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.post(`/blogs`, jsonData, { headers: { 'Content-type': 'multipart/form-data' } });
-        toast.success('Successfully added new banner.');
+        toast.success('Đã thêm tin mới thành công.');
         return data;
 
     } catch (error) {
@@ -13,10 +13,18 @@ export const addBlog = createAsyncThunk('blog/addBlog', async({ jsonData, toast 
         return rejectWithValue(error.response.data.message);
     }
 })
-
-export const getBlogs = createAsyncThunk('blog/getBlogs', async({ toast }, { rejectWithValue }) => {
+export const getBlogs = createAsyncThunk('blog/getBlogs', async ({ search, currentPage, startDate, endDate, status, category, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPublic.get(`/blogs`);
+        let query = '';
+        if (search) query += `keyword=${search}&`;
+        if (currentPage) query += `page=${currentPage}&`;
+        if (startDate) query += `createdAt[gte]=${startDate}T00:00:00.000Z&`;
+        if (endDate) query += `createdAt[lte]=${endDate}T23:59:59.999Z&`;
+        if (status) query += `status=${status}&`;
+        if (category) query += `blogCategory=${category}&`;
+        query = query.endsWith('&') ? query.slice(0, -1) : query;
+
+        const { data } = await axiosPublic.get(`/blogs?${query}`);
         return data;
 
     } catch (error) {
@@ -24,19 +32,29 @@ export const getBlogs = createAsyncThunk('blog/getBlogs', async({ toast }, { rej
         return rejectWithValue(error.response.data.message);
     }
 })
-
-export const getBlogsAuthorizeRole = createAsyncThunk('blog/getBlogsAuthorizeRole', async({ toast }, { rejectWithValue }) => {
+export const getBlogsAuthorizeRole = createAsyncThunk('blog/getBlogsAuthorizeRole', async ({ search, currentPage, startDate, endDate, status, category, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPrivate.get('/athorized/blogs');
+        let query = '';
+        if (search) query += `keyword=${search}&`;
+        if (currentPage) query += `page=${currentPage}&`;
+        if (startDate) query += `createdAt[gte]=${startDate}T00:00:00.000Z&`;
+        if (endDate) query += `createdAt[lte]=${endDate}T23:59:59.999Z&`;
+        if (status) query += `status=${status}&`;
+        if (category) query += `blogCategory=${category}&`;
+        query = query.endsWith('&') ? query.slice(0, -1) : query;
+        const { data } = await axiosPrivate.get(`/athorized/blogs?${query}`);
         return data;
+
     } catch (error) {
         toast.error(error.response.data.message);
         return rejectWithValue(error.response.data.message);
     }
 })
-export const deleteBlog = createAsyncThunk('blog/deleteBlog', async({ id, toast }, { rejectWithValue }) => {
+export const deleteBlog = createAsyncThunk('blog/deleteBlog', async ({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.delete(`/blogs/${id}`);
+        toast.success('Đã xóa tin thành công .');
+
         return data;
 
     } catch (error) {
@@ -45,7 +63,7 @@ export const deleteBlog = createAsyncThunk('blog/deleteBlog', async({ id, toast 
     }
 })
 
-export const blogDetails = createAsyncThunk('blog/blogDetails', async({ id, toast }, { rejectWithValue }) => {
+export const blogsDetails = createAsyncThunk('blog/blogDetails', async ({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPublic.get(`/blogs/${id}`);
         return data;
@@ -56,30 +74,29 @@ export const blogDetails = createAsyncThunk('blog/blogDetails', async({ id, toas
     }
 })
 
-
-
-export const updateBlog = createAsyncThunk('blog/updateBlog', async({ id, jsonData, toast }, { rejectWithValue }) => {
+export const updateBlog = createAsyncThunk('blog/updateBlog', async ({ id, jsonData, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.put(`/blogs/${id}`, jsonData, { headers: { 'Content-type': 'multipart/form-data' } });
-        toast.success('blog updated.')
+        toast.success('Đã cập nhật tin thành công.')
         return data;
     } catch (error) {
         toast.error(error.response.data.message);
         return rejectWithValue(error.response.data.message);
     }
 })
-
 const blogSlice = createSlice({
     name: 'blog',
     initialState: {
         mutationResult: { success: false },
-        blogslist: {},
-        blogsDetails: {},
-        blogslistAuthorizeRole: {}
+        bloglist: { blogs: [] },
+        blogDetails: {}
     },
     reducers: {
         resetMutationResult: (state) => {
             state.mutationResult.success = false;
+        },
+        resetBlogs: (state) => {
+            state.bloglist.blogs = [];
         }
     },
     extraReducers: {
@@ -97,29 +114,33 @@ const blogSlice = createSlice({
         },
         // get all category list
         [getBlogs.pending]: (state, action) => {
-            state.blogslist.loading = true;
+            state.bloglist.loading = true;
         },
         [getBlogs.fulfilled]: (state, action) => {
-            state.blogslist.loading = false;
-            state.blogslist.blogs = action.payload.blogs;
+            state.bloglist.loading = false;
+            state.bloglist.blogs = [...state.bloglist.blogs, ...action.payload.blogs];
+            state.bloglist.blogCount = action.payload.blogCount;
+            state.bloglist.resultPerPage = action.payload.resultPerPage;
+            state.bloglist.filteredBlogsCount = action.payload.filteredBlogsCount;
         },
         [getBlogs.rejected]: (state, action) => {
-            state.blogslist.loading = false;
-            state.blogslist.error = action.payload;
+            state.bloglist.loading = false;
+            state.bloglist.error = action.payload;
         },
-        // get all category list by role
         [getBlogsAuthorizeRole.pending]: (state, action) => {
-            state.blogslistAuthorizeRole.loading = true;
+            state.bloglist.loading = true;
         },
         [getBlogsAuthorizeRole.fulfilled]: (state, action) => {
-            state.blogslistAuthorizeRole.loading = false;
-            state.blogslistAuthorizeRole.blogs = action.payload.blogs;
+            state.bloglist.loading = false;
+            state.bloglist.blogs = action.payload.blogs;
+            state.bloglist.blogCount = action.payload.blogCount;
+            state.bloglist.resultPerPage = action.payload.resultPerPage;
+            state.bloglist.filteredBlogsCount = action.payload.filteredBlogsCount;
         },
         [getBlogsAuthorizeRole.rejected]: (state, action) => {
-            state.blogslistAuthorizeRole.loading = false;
-            state.blogslistAuthorizeRole.error = action.payload;
+            state.bloglist.loading = false;
+            state.bloglist.error = action.payload;
         },
-        //delete a category
         [deleteBlog.pending]: (state, action) => {
             state.mutationResult.loading = true;
         },
@@ -131,19 +152,17 @@ const blogSlice = createSlice({
             state.mutationResult.loading = false;
             state.mutationResult.error = action.payload;
         },
-        //get category details
-        [blogDetails.pending]: (state, action) => {
-            state.blogsDetails.loading = true;
+        [blogsDetails.pending]: (state, action) => {
+            state.blogDetails.loading = true;
         },
-        [blogDetails.fulfilled]: (state, action) => {
-            state.blogsDetails.loading = false;
-            state.blogsDetails.blog = action.payload.blog;
+        [blogsDetails.fulfilled]: (state, action) => {
+            state.blogDetails.loading = false;
+            state.blogDetails.blog = action.payload.blog;
         },
-        [blogDetails.rejected]: (state, action) => {
-            state.blogsDetails.loading = false;
-            state.blogsDetails.error = action.payload;
+        [blogsDetails.rejected]: (state, action) => {
+            state.blogDetails.loading = false;
+            state.blogDetails.error = action.payload;
         },
-        //update category
         [updateBlog.pending]: (state, action) => {
             state.mutationResult.loading = true;
         },
@@ -155,14 +174,12 @@ const blogSlice = createSlice({
             state.mutationResult.loading = false;
             state.mutationResult.error = action.payload;
         },
-
     }
 })
 
 export const selectBlogMutationResult = (state) => state.blog.mutationResult;
-export const selectAllBlog = (state) => state.blog.blogslist;
-export const selectBlogDetails = (state) => state.blog.blogsDetails;
-export const selectAllBlogAuthorizeRole = (state) => state.blog.blogslistAuthorizeRole;
-export const { resetMutationResult } = blogSlice.actions;
+export const selectAllBlog = (state) => state.blog.bloglist;
+export const selectBlogDetails = (state) => state.blog.blogDetails;
+export const { resetMutationResult, resetBlogs } = blogSlice.actions;
 
 export default blogSlice.reducer;

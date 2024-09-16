@@ -13,7 +13,7 @@ const bannerSchema = new mongoose.Schema({
     LinkURL: {
         type: String
     },
-    bannerStatus: {
+    Status: {
         type: String,
         required: true,
         enum: ['slide', 'pause', 'bottom', 'right'],

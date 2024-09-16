@@ -11,13 +11,13 @@ import { IMAGE_BASEURL } from '../../constants/baseURL';
 import "./type.css";
 import noImg from "../../images/gallery.png"
 import {toast} from 'react-toastify';
+import BoxShadowLoader from '../Skeletons/BoxShadowLoader';
 
 const BannersSlide = ({ images }) => {
   const dispatch = useDispatch();
 
   const { loading, banners } = useSelector(selectAllBanner);
-  // Kiểm tra xem có banner phù hợp không
-  const hasMatchingBanner = banners && banners.some(banner => banner.bannerStatus === "slide");
+  const hasMatchingBanner = banners && banners.some(banner => banner.Status === "slide");
 
   const pagination = {
     clickable: true,
@@ -29,7 +29,7 @@ const BannersSlide = ({ images }) => {
     dispatch(fetchBannerData({toast})); 
   }, [dispatch]);
 
-
+if(banners==undefined)return <BoxShadowLoader/>
   return (
     <Swiper
       cssMode={true}
@@ -43,7 +43,7 @@ const BannersSlide = ({ images }) => {
       className="mySwiper"
     >
       {banners && banners.map((banner, index) => (
-        (banner.bannerStatus === "slide" ?
+        (banner.Status === "slide" ?
           <SwiperSlide key={index}>
             <a href={banner.LinkURL}>
               <img src={IMAGE_BASEURL + (banner?.ImageURL?.url || '')} alt="" className="custom-image" />

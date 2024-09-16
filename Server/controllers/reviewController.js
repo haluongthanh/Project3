@@ -1,9 +1,11 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/productModel');
 const ErrorHandler = require('../utils/errorHandler');
+const { logAction } = require('../utils/log')
 
 exports.createProductReview = asyncHandler(async(req, res, next) => {
     const { rating, comment, productId } = req.body;
+    req.body.addedBy = req.userInfo.userId;
 
     const review = {
         user: req.userInfo.userId,
@@ -19,7 +21,7 @@ exports.createProductReview = asyncHandler(async(req, res, next) => {
     if (isReviewed) {
         product.reviews.forEach((rev) => {
             if (rev.user.toString() === req.userInfo.userId.toString())
-                (rev.rating = rating), (rev.comment = coment);
+                (rev.rating = rating), (rev.comment = comment);
             return next(new ErrorHandler('bạn đã đánh giá sản phẩm'));
         })
     } else {
@@ -32,7 +34,15 @@ exports.createProductReview = asyncHandler(async(req, res, next) => {
         avg += rev.rating;
     })
     product.ratings = avg / product.reviews.length;
-
+    await logAction(
+        'Create Review Product',
+        'CREATE',
+        'Product Review', 
+        product._id,
+        req.userInfo.userId,
+        null, 
+        req.body
+    );
     await product.save({ validateBeforeSave: false });
 
     res.status(200).json({ success: true });
@@ -40,14 +50,15 @@ exports.createProductReview = asyncHandler(async(req, res, next) => {
 
 exports.getProductReviews = asyncHandler(async(req, res, next) => {
     const product = await Product.findById(req.query.id).populate({ path: 'reviews', populate: ({ path: 'user', select: 'name avatar' }) });
-    if (!product) return next(new ErrorHandler('Product not found', 404));
+    if (!product) return next(new ErrorHandler('Sản Phẩm Không Tồn Tại', 404));
 
     res.status(200).json({ success: true, reviews: product.reviews });
 })
 
 exports.deleteProductReview = asyncHandler(async(req, res, next) => {
     const product = await Product.findById(req.query.productId);
-    if (!product) return next(new ErrorHandler('Product not found', 404));
+    if (!product) return next(new ErrorHandler('Sản Phẩm Không Tồn Tại', 404));
+    req.body.updatedBy = req.userInfo.userId;
 
     const reviews = product.reviews.filter(
         (rev) => rev._id.toString() !== req.query.id.toString()
@@ -73,5 +84,16 @@ exports.deleteProductReview = asyncHandler(async(req, res, next) => {
         runValidators: true,
         useFindAndModify: false
     })
+    const oldValue = product;
+
+    await logAction(
+        'Delete Review Product',
+        'DELETE',
+        'Product Review',
+        product._id,
+        req.userInfo.userId,
+        oldValue,
+        null
+    );
     res.status(200).json({ success: true });
 })

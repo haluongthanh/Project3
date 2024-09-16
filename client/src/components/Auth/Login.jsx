@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { useNavigate, useLocation } from 'react-router-dom';
-
-import { login, selectLoggedInUser, persistLogin, loginGoogle } from '../../redux/features/authSlice';
-import GoogleButton from 'react-google-button';
-import { Box, Avatar, Typography, TextField, Button, Grid, FormGroup, FormControlLabel, Checkbox, Link } from '@mui/material';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { login, selectLoggedInUser, persistLogin } from '../../redux/features/authSlice';
+import { Box, Avatar, Typography, TextField, Button, Grid, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { GoogleAuthProvider ,signInWithPopup,getAuth} from 'firebase/auth'
-import {app} from '../../firebase';
+import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import { BASEURL } from '../../constants/baseURL';
+
 const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -21,42 +21,31 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [checked, setChecked] = useState(false);
-    const handleLoginGoogle = async () => {
-        try {
-            const Provider =new GoogleAuthProvider();
-            const auth =getAuth();
-            const result =await signInWithPopup(auth,Provider)
-        
-            const formData=new FormData();
-            formData.append('email',result.user.email);
-            formData.append('name',result.user.displayName);
-            formData.append('authGoogleId',result.user.providerData[0].uid);
-            dispatch(loginGoogle({ formData, toast }));
 
-           
-        } catch (error) {
-            console.log(error)
-        }
-
-    };
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        const jsonData = {
-            email,
-            password
-        }
+        const jsonData = { email, password };
         dispatch(login({ jsonData, toast }));
-    }
+    };
+
+    const handleKeepMeLoggedInGoogle = () => {
+        window.location.href = `${BASEURL}/api/v1/auth/google/callback`;
+    };
+
+    const handleKeepMeLoggedInFacebook = () => {
+        window.location.href = `${BASEURL}/api/v1/auth/facebook/callback`;
+    };
+
     const handleKeepMeLoggedIn = async (e) => {
         setChecked(!checked);
         dispatch(persistLogin(!checked));
-    }
+    };
+
     useEffect(() => {
         if (accessToken) {
             navigate(path);
         }
-    }, [accessToken, navigate, path])
+    }, [accessToken, navigate, path]);
 
     return (
         <>
@@ -64,10 +53,11 @@ const Login = () => {
                 <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
                     <LockOutlinedIcon />
                 </Avatar>
-                <Typography component='div' variant='h5'>Login</Typography>
+                <Typography component='div' variant='h5'>Đăng Nhập</Typography>
 
                 <Box component='form' onSubmit={handleSubmit}>
-                    <TextField type='email'
+                    <TextField
+                        type='email'
                         id='email'
                         label='Email'
                         name='email'
@@ -77,41 +67,64 @@ const Login = () => {
                         autoComplete='email'
                         autoFocus
                         value={email}
-                        onChange={(e => setEmail(e.target.value))}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
-                    <TextField type='password'
+                    <TextField
+                        type='password'
                         id='password'
-                        label='Password'
+                        label='Mật khẩu'
                         name='password'
                         margin='normal'
                         required
                         fullWidth
-                        autoFocus
+                        autoComplete='current-password'
                         value={password}
-                        onChange={(e => setPassword(e.target.value))}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
-                    <Button type='submit'
+                    <Button
+                        type='submit'
                         fullWidth
                         variant='contained'
                         sx={{ mt: 3, mb: 2 }}
-                    >Login</Button>
+                    >Đăng Nhập</Button>
 
-                    <Grid container style={{}}>
-                        <Grid item xs>
+                    <Grid container alignItems="center" justifyContent="space-between">
+                        <Grid item>
                             <FormGroup>
-                                <FormControlLabel control={<Checkbox />}
+                                <FormControlLabel
+                                    control={<Checkbox checked={checked} onChange={handleKeepMeLoggedIn} />}
                                     label='Keep me logged in.'
-                                    checked={checked}
-                                    onChange={handleKeepMeLoggedIn}
                                 />
                             </FormGroup>
                         </Grid>
+                        <Grid item>
+                            <Link to="/forgotpassword">Quên mật khẩu</Link>
+                        </Grid>
                     </Grid>
                 </Box>
-            </Box>
-            <button type='button' onClick={handleLoginGoogle}>login google</button>
-        </>
-    )
-}
 
-export default Login
+                <Button
+                    onClick={handleKeepMeLoggedInGoogle}
+                    fullWidth
+                    variant='contained'
+                    startIcon={<GoogleIcon />}
+                    sx={{ mt: 1, mb: 1 }}
+                >
+                    Google
+                </Button>
+
+                <Button
+                    onClick={handleKeepMeLoggedInFacebook}
+                    fullWidth
+                    variant='contained'
+                    startIcon={<FacebookIcon />}
+                    sx={{ mt: 1, mb: 1 }}
+                >
+                    Facebook
+                </Button>
+            </Box>
+        </>
+    );
+};
+
+export default Login;
