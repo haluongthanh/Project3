@@ -23,17 +23,16 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         id: { type: String },
-        url: { type: String }
+        url: {
+            type: String,
+            default: '/images/avatar/default/images.jpg'
+        }
     },
     roles: {
         type: [String],
         default: 'user',
         required: true,
-        enum: ['admin', 'seller', 'user']
-    },
-    store: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Store"
+        enum: ['admin', 'manage', 'staff', 'seller', 'user']
     },
     updatedBy: {
         user: {
@@ -42,18 +41,14 @@ const userSchema = new mongoose.Schema({
         }
     },
     refreshToken: [String],
+    refreshPassword: [String],
+    resetPasswordExpire: {
+        type: Date,
+        default: Date.now
+    },
     blocked: {
         type: Boolean,
         default: false
-    },
-    authType: {
-        type: String,
-        enum: ['local', 'google'],
-        default: 'local'
-    },
-    authGoogleId: {
-        type: String,
-        default: null
     }
 }, {
     timestamps: true
@@ -69,5 +64,6 @@ userSchema.pre("save", async function(next) {
 userSchema.methods.comparePassword = async function(oldPassword) {
     return await bcrypt.compare(oldPassword, this.password);
 }
+
 
 module.exports = mongoose.model("User", userSchema);

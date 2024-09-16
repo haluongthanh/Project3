@@ -10,9 +10,9 @@ const { isAuthenticated, authorizeRoles } = require('../middleware/auth');
 
 router.route('/categories')
     .post(isAuthenticated,
-        authorizeRoles('admin'),
+        authorizeRoles('admin',  'manage'),
         fileUpload({ createParentPath: true }),
-        fileExtLimiter(['.png', '.jpg', '.jpeg']),
+        fileExtLimiter(['.png', '.jpg', '.jpeg', '.webp']),
         fileSizeLimiter, addCategory)
     .get(getCategories);;
 
@@ -20,13 +20,13 @@ router.route('/categories')
 router.route('/categories/:id')
     .get(getCategoryDetails)
     .put(isAuthenticated,
-        authorizeRoles('admin'),
+        authorizeRoles('admin',  'manage'),
         fileUpload({ createParentPath: true }),
-        fileExtLimiter(['.png', '.jpg', '.jpeg']),
+        fileExtLimiter(['.png', '.jpg', '.jpeg', '.webp']),
         fileSizeLimiter, updateCategory)
-    .delete(isAuthenticated, authorizeRoles('admin'), deleteCategory);
+    .delete(isAuthenticated, authorizeRoles('admin',  'manage'), deleteCategory);
 
-router.route('/athorized/categorys').get(isAuthenticated, authorizeRoles('admin', 'seller'), getCategoriesAuthorizeRole);
+router.route('/athorized/categorys').get(isAuthenticated, authorizeRoles('admin',  'manage'), getCategoriesAuthorizeRole);
 
 
 module.exports = router;

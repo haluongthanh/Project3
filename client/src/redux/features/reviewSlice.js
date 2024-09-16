@@ -26,7 +26,7 @@ export const getReviews=createAsyncThunk('review/getReviews',async({id,toast},{r
 export const deleteReview=createAsyncThunk('review/deleteReview',async({reviewId,productId,toast},{rejectWithValue})=>{
     try{
         const {data}=await axiosPrivate.delete(`/reviews?id=${reviewId}&productId=${productId}`);
-        toast.success('Review deleted.');
+        toast.success('Đã xóa đánh giá sản phẩm  thành công.');
         return data;
 
     }catch(error){

@@ -1,368 +1,425 @@
-import React,{useState,useEffect} from 'react'
-import {useDispatch,useSelector} from 'react-redux';
-import {toast} from 'react-toastify';
-import './Product.css';
-
-import {Box, Typography, TextField, Button, TextareaAutosize, Grid,  MenuItem, FormControl, Select, InputLabel} from '@mui/material';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import {styled} from '@mui/material/styles';
-import CollectionsIcon from '@mui/icons-material/Collections';
-
-import {getCategories,selectAllCategories} from '../../../redux/features/categorySlice';
-import {getBrands,selectAllBrands} from '../../../redux/features/brandSlice';
-
-import {addProduct,resetMutationResult,selectProductMutationResult} from '../../../redux/features/productSlice';
-import {POLICIES} from '../../../constants/policies';
-import gallery from '../../../images/gallery.png';
-import galleryback from '../../../images/galleryback.png';
-
-
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { getCategories, selectAllCategories } from '../../../redux/features/categorySlice';
+import { getBrands, selectAllBrands } from '../../../redux/features/brandSlice';
+import { addProduct, resetMutationResult, selectProductMutationResult } from '../../../redux/features/productSlice';
+import { POLICIES } from '../../../constants/policies';
+import JoditEditor from 'jodit-react';
+import './Product.css'
 const AddNewProduct = () => {
+  const dispatch = useDispatch();
+  const { loading, success } = useSelector(selectProductMutationResult);
+  const { brands } = useSelector(selectAllBrands);
+  const { categories } = useSelector(selectAllCategories);
 
-    const Input=styled('input')({
-      display:'none',
-    })
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [discount, setDiscount] = useState(0);
+  const [weight, setWeight] = useState(0);
+  const [stock, setStock] = useState(1);
+  const [category, setCategory] = useState('');
+  const [brand, setBrand] = useState('');
+  const [localShipmentPolicy, setLocalShipmentPolicy] = useState('standard');
+  const [internationalShipmentPolicy, setInternationalShipmentPolicy] = useState('standard');
+  const [customLocalShipmentCost, setCustomLocalShipmentCost] = useState('');
+  const [customInternationalShipmentCost, setCustomInternationalShipmentCost] = useState('');
+  const [images, setImages] = useState([]);
+  const [productFiles, setProductFiles] = useState([]);
+  const [status, setStatus] = useState('');
 
-    const InfoTooltip = styled(({ className, ...props }) => (
-      <Tooltip {...props} arrow classes={{ popper: className }} />
-    ))(({ theme }) => ({
-      [`& .${tooltipClasses.arrow}`]: {
-        color: theme.palette.common.black,
-      },
-      [`& .${tooltipClasses.tooltip}`]: {
-        backgroundColor: theme.palette.common.black,
-        padding:'10px 5px',
-        maxWidth:220
-      },
-    }));
+  const imageHandler = (e) => {
+    const files = Array.from(e.target.files);
+    const existingFileNames = new Set(productFiles.map(file => file.name));
+    const newFiles = [];
 
-    const dispatch=useDispatch();
-    const {loading,success}=useSelector(selectProductMutationResult);
-    const {brands}=useSelector(selectAllBrands);
-    const {categories}=useSelector(selectAllCategories);
-    
-    const [title,setTitle]=useState('');
-    const [description,setDescription]=useState('');
-    const [price,setPrice]=useState('');
-    const [discount,setDiscount]=useState(0);
-    const [weight,setWeight]=useState(0);
-    const [stock,setStock]=useState(1);
-    const [category,setCategory]=useState('');
-    const [brand,setBrand]=useState('');
-    
-    const [localShipmentPolicy,setLocalShipmentPolicy]=useState('standard');
-    const [internationalShipmentPolicy,setInternationalShipmentPolicy]=useState('standard');
-    const [customLocalShipmentCost,setCustomLocalShipmentCost]=useState('');
-    const [customInternationalShipmentCost,setCustomInternationalShipmentCost]=useState('');
-
-    const [images,setImages]=useState([]);
-    const [productFiles,setProductFiles]=useState([]);
-
-
-
-    const imageHandler=(e)=>{
-        const files=Array.from(e.target.files);
-        setProductFiles(e.target.files);
-        setImages([]);
-
-        files.forEach((file)=>{
-          const reader=new FileReader();
-          reader.onload=()=>{
-            if(reader.readyState===2){
-              setImages((old)=>[...old,reader.result])
-            }
-          }
-          reader.readAsDataURL(file);
-        })    
-    }
-    const handleSubmit=(e)=>{
-        e.preventDefault();
-
-        if(images.length<1){
-          toast.error('Please select images.');
-          return;
-        }
-        if((localShipmentPolicy==='custom') &&(customLocalShipmentCost<1)){
-          toast.error('Please enter custom shipping cost');
-          return;
-        }
-        if((internationalShipmentPolicy==='custom') &&(setCustomInternationalShipmentCost<1)){
-          toast.error('Please enter custom shipping cost');
-          return;
-        }
-        const formData=new FormData();
-        formData.append('title',title);
-        formData.append('description',description);
-        formData.append('price',price);
-        formData.append('discount',discount);
-        formData.append('weight',weight);
-        formData.append('stock',stock);
-        formData.append('category',category);
-        formData.append('brand',brand);
-       
-
-        formData.append('localShipmentPolicy',localShipmentPolicy);
-        formData.append('internationalShipmentPolicy',internationalShipmentPolicy);
-        formData.append('customLocalShipmentCost',customLocalShipmentCost);
-        formData.append('setCustomInternationalShipmentCost',setCustomInternationalShipmentCost);
-
-        Object.keys(productFiles).forEach(key=>{
-          formData.append(productFiles.item(key).name,productFiles.item(key));
-        })
-        dispatch(addProduct({formData,toast}));
-    }
-
-    useEffect(() => {
-      dispatch(getBrands({toast}));
-      dispatch(getCategories({toast}));
-      
-    }, [dispatch]);
-    
-    useEffect(() => {
-      
-      if(success){
-        dispatch(resetMutationResult());
-        setTitle('');
-        setDescription('');
-        setPrice('');
-        setDiscount(0);
-        setWeight(0);
-        setStock(1);
-        setCategory('');
-        setBrand('');
-       
-        setLocalShipmentPolicy('standard');
-        setInternationalShipmentPolicy('standard');
-        setCustomLocalShipmentCost('');
-        setCustomInternationalShipmentCost('');
-        setImages([]);
-        setProductFiles('');
+    files.forEach((file) => {
+      if (!existingFileNames.has(file.name)) {
+        newFiles.push(file);
+        existingFileNames.add(file.name);
+      } else {
+        toast.error(`File ${file.name} is already uploaded.`);
       }
-    }, [success, dispatch]);
-    
+    });
+
+    if (newFiles.length > 0) {
+      setProductFiles([...productFiles, ...newFiles]);
+
+      newFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (reader.readyState === 2) {
+            setImages((old) => [...old, reader.result]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+  const removeImage = (index) => {
+    setImages(images.filter((_, i) => i !== index));
+    setProductFiles(productFiles.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (images.length < 1) {
+      toast.error('Vui lòng chọn hình ảnh.');
+      return;
+    }
+    if (!description.trim()) {
+      toast.error('Vui lòng nhập mô tả sản phẩm.');
+      return;
+    }
+    if ((localShipmentPolicy === 'custom') && (customLocalShipmentCost < 1)) {
+      toast.error('Vui lòng nhập chi phí vận chuyển tùy chỉnh');
+      return;
+    }
+    if ((internationalShipmentPolicy === 'custom') && (customInternationalShipmentCost < 1)) {
+      toast.error('Vui lòng nhập chi phí vận chuyển tùy chỉnh');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('price', price);
+    formData.append('discount', discount);
+    formData.append('weight', weight);
+    formData.append('stock', stock);
+    formData.append('category', category);
+    formData.append('brand', brand);
+    formData.append('Status', status);
+    formData.append('localShipmentPolicy', localShipmentPolicy);
+    formData.append('internationalShipmentPolicy', internationalShipmentPolicy);
+    formData.append('customLocalShipmentCost', customLocalShipmentCost);
+    formData.append('customInternationalShipmentCost', customInternationalShipmentCost);
+
+    productFiles.forEach((file, i) => {
+      formData.append(`productImage_${i}`, file);
+    });
+
+
+    dispatch(addProduct({ formData, toast }));
+  };
+  console.log(status)
+
+  useEffect(() => {
+    dispatch(getBrands({ toast }));
+    dispatch(getCategories({ toast }));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (success) {
+      dispatch(resetMutationResult());
+      setTitle('');
+      setDescription('');
+      setPrice('');
+      setDiscount(0);
+      setWeight(0);
+      setStock(1);
+      setCategory('');
+      setBrand('');
+      setLocalShipmentPolicy('standard');
+      setInternationalShipmentPolicy('standard');
+      setCustomLocalShipmentCost('');
+      setCustomInternationalShipmentCost('');
+      setImages([]);
+      setProductFiles([]);
+    }
+  }, [success, dispatch]);
+
+  const handleEditorChange = useCallback((newText) => {
+    setDescription(newText);
+  }, []);
+
+  const editor = useRef(null);
+
+  const config = useMemo(() => ({
+    zIndex: 0,
+    readonly: false,
+    activeButtonsInReadOnly: ['source', 'fullsize', 'print', 'about'],
+    toolbarButtonSize: 'middle',
+    theme: 'default',
+    enableDragAndDropFileToEditor: true,
+    saveModeInCookie: false,
+    spellcheck: true,
+    editorCssClass: false,
+    triggerChangeEvent: true,
+    height: 500,
+    direction: 'ltr',
+    language: 'en',
+    debugLanguage: false,
+    i18n: 'en',
+    tabIndex: -1,
+    toolbar: true,
+    enter: 'P',
+    useSplitMode: false,
+    colorPickerDefaultTab: 'background',
+    imageDefaultWidth: 100,
+    disablePlugins: ['paste', 'stat'],
+    events: {},
+    textIcons: false,
+    uploader: {
+      insertImageAsBase64URI: true
+    },
+    placeholder: '',
+    showXPathInStatusbar: false
+  }), []);
+
   return (
-    <Box sx={{m:'0 auto',marginTop:2, maxWidth:'550px'}}>
-        <Typography component='div' variant='h5'sx={{textAlign:'center'}}>Add new product</Typography>
-        <Box component='form' onSubmit={handleSubmit}>
-            <TextField type='text'
-                        id='title'
-                        label='Title'
-                        name='title'
-                        margin='normal'
-                        required
-                        fullWidth
-                        autoFocus
-                        value={title}
-                        onChange={(e=>setTitle(e.target.value))}
-            />
-            <TextareaAutosize required
-                              aria-label='description'
-                              minRows={5}
-                              placeholder='Description'
-                              value={description}
-                              style={{width:'100%',marginTop:'16px'}}
-                              onChange={(e=>setDescription(e.target.value))}
-            />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField type='number'
-                          id='price'
-                          label='Price'
-                          name='price'
-                          margin='normal'
-                          required
-                          fullWidth
-                          value={price}
-                          onChange={(e=>setPrice(e.target.value))}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField type='number'
-                          id='discount'
-                          label='Discount'
-                          name='discount'
-                          margin='normal'
-                          required
-                          fullWidth
-                          value={discount}
-                          onChange={(e=>setDiscount(e.target.value))}
-                />               
-                </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <InfoTooltip placement='right'
-                              arrow
-                              title='Weight in kg. Put weight if items weight exceed 5kg'>
-                  <TextField type='number'
-                          id='weight'
-                          label='Weight'
-                          name='weight'
-                          margin='normal'
-                          fullWidth
-                          value={weight}
-                          onChange={(e=>setWeight(e.target.value))}
-                  />
-                </InfoTooltip>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField type='number'
-                          id='stock'
-                          label='Stock'
-                          name='stock'
-                          margin='normal'
-                          required
-                          fullWidth
-                          value={stock}
-                          onChange={(e=>setStock(e.target.value))}
-                />               
-                </Grid>
-            </Grid>
+    <div className="container mt-4">
+      <h2 className="text-center">Thêm Mới Sản Phẩm</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="title" className="form-label">Tiêu Đề</label>
+          <input
+            type="text"
+            id="title"
+            className="form-control"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
 
-             <Grid container spacing={2} sx={{mt:'4px'}}>
-              <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <InputLabel id='category'>Category</InputLabel>
-                    <Select required
-                            labelId='category'
-                            id='category'
-                            value={category}
-                            label='Category'
-                            onChange={(e=>setCategory(e.target.value))}>
+        <div className="mb-3">
+          <label htmlFor="description" className="form-label">Mô Tả Sản Phẩm</label>
+          <JoditEditor
+            ref={editor}
+            value={description}
+            config={config}
+            onChange={handleEditorChange}
+            required
+          />
+        </div>
 
-                            {categories && categories.map((cat)=>
-                              <MenuItem key={cat._id} value={cat._id}>{cat.title}</MenuItem>
-                            )}
-                    </Select>
-                  </FormControl>
-              </Grid>
-              <Grid item xs={6}>
-                <FormControl fullWidth>
-                    <InputLabel id='brand'>Brand</InputLabel>
-                    <Select required
-                            labelId='brand'
-                            id='brand'
-                            value={brand}
-                            label='Brand'
-                            onChange={(e=>setBrand(e.target.value))}>
+        <div className="row mb-3">
+          <div className="col-md-6">
+            <div className="mb-3">
+              <label htmlFor="price" className="form-label">Giá</label>
+              <input
+                type="number"
+                id="price"
+                className="form-control"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="discount" className="form-label">Giảm giá</label>
+              <input
+                type="number"
+                id="discount"
+                className="form-control"
+                value={discount}
+                onChange={(e) => setDiscount(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3">
+              <label htmlFor="weight" className="form-label">Cân nặng</label>
+              <input
+                type="number"
+                id="weight"
+                className="form-control"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="stock" className="form-label">Số Lượng</label>
+              <input
+                type="number"
+                id="stock"
+                className="form-control"
+                value={stock}
+                onChange={(e) => setStock(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+        </div>
 
-                            {brands && brands.map((brand)=>
-                              <MenuItem key={brand._id} value={brand._id}>{brand.title}</MenuItem>
-                            )}
-                    </Select>
-                  </FormControl>             
-              </Grid>
-            </Grid>
-
-           
-
-            <Grid container spacing={2} sx={{mt:'16px'}}>
-              <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <InputLabel id='localShipmentPolicy'>Local Shipment Policy</InputLabel>
-                    <Select required
-                            labelId='localShipmentPolicy'
-                            id='localShipmentPolicy'
-                            value={localShipmentPolicy}
-                            label='Local Shipment Policy'
-                            onChange={(e=>setLocalShipmentPolicy(e.target.value))}>
-
-                            {POLICIES && POLICIES.map((policy)=>
-                              <MenuItem key={policy.id} value={policy.type}>{policy.title}</MenuItem>
-                            )}
-                    </Select>
-                  </FormControl>
-              </Grid>
-              <Grid item xs={6}>
-              <FormControl fullWidth>
-                    <InputLabel id='internationalShipmentPolicy'>International Shipment Policy</InputLabel>
-                    <Select required
-                            labelId='internationalShipmentPolicy'
-                            id='internationalShipmentPolicy'
-                            value={internationalShipmentPolicy}
-                            label='International Shipment Policy'
-                            onChange={(e=>setInternationalShipmentPolicy(e.target.value))}>
-
-                            {POLICIES && POLICIES.map((policy)=>
-                              <MenuItem key={policy.id} value={policy.type}>{policy.title}</MenuItem>
-                            )}
-                    </Select>
-                  </FormControl>             
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                {localShipmentPolicy!=='custom'? '' :
-                <TextField type='number'
-                          id='customLocalShipmentCost'
-                          label='Local Shipment Cost'
-                          name='customLocalShipmentCost'
-                          margin='normal'
-                          fullWidth
-                          value={customLocalShipmentCost}
-                          onChange={(e=>setCustomLocalShipmentCost(e.target.value))}
-                />
-                }
-              </Grid>
-              <Grid item xs={6}>
-                {internationalShipmentPolicy!=='custom'? '' :
-                <TextField type='number'
-                          id='customInternationalShipmentCost'
-                          label='International Shipment Cost'
-                          name='customInternationalShipmentCost'
-                          margin='normal'
-                          fullWidth
-                          value={customInternationalShipmentCost}
-                          onChange={(e=>setCustomInternationalShipmentCost(e.target.value))}
-                /> 
-                }              
-                </Grid>
-            </Grid>
-
-            <Box>
-                <label htmlFor='productImage'>
-                  <Input  accept='imaage/*'
-                          id='productImage'
-                          multiple
-                          type='file'
-                          name='productImage'
-                          onChange={imageHandler}
-                  />
-                  <Button type='button'
-                              fullWidth
-                              component='span'
-                              variant='outlined'
-                              startIcon={<CollectionsIcon/>}
-                              sx={{m:'16px 0'}}
-                  >Upload photo</Button>                  
-                </label>
-            </Box>
-            {images.length>0?
-              <Box className='galleryback'>
-                {images.map((image,index)=>(
-                  <img key={index} src={image} alt='product image' style={{maxWidth:90, maxHeight:80, padding:'0 5px'}} />
+        <div className="row mb-3">
+          <div className="col-md-6">
+              <label htmlFor="category" className="form-label">Danh Mục</label>
+              <select
+                id="category"
+                className="form-select"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+              >
+                <option value="">Chọn Danh Mục</option>
+                {categories && categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>{cat.title}</option>
                 ))}
-              </Box>
-            :
-            <Box className='galleryback' style={{backgroundImage:`url("${galleryback}")`}}>
-                <img src={gallery} alt='oshop nophoto'/>
-            </Box>
-            }
+              </select>
+            
+          </div>
+          <div className="col-md-6">
+              <label htmlFor="brand" className="form-label">Thương Hiệu</label>
+              <select
+                id="brand"
+                className="form-select"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                required
+              >
+                <option value="">Chọn Thương Hiệu</option>
+                {brands && brands.map((br) => (
+                  <option key={br._id} value={br._id}>{br.title}</option>
+                ))}
+              </select>
+            </div>
+        </div>
 
+        <div className="row mb-3">
+          <div className="col-md-6">
+            <label className="form-label">Local Shipment Policy</label>
+            <div>
+              <input
+                type="radio"
+                id="localStandard"
+                name="localShipmentPolicy"
+                value="standard"
+                checked={localShipmentPolicy === 'standard'}
+                onChange={(e) => setLocalShipmentPolicy(e.target.value)}
+              />
+              <label htmlFor="localStandard" className="ms-2">Standard</label>
+              <input
+                type="radio"
+                id="localFree"
+                name="localShipmentPolicy"
+                value="free"
+                checked={localShipmentPolicy === 'free'}
+                onChange={(e) => setLocalShipmentPolicy(e.target.value)}
+              />
+              <label htmlFor="localFree" className="ms-2">Free Shipment</label>
+              <input
+                type="radio"
+                id="localCustom"
+                name="localShipmentPolicy"
+                value="custom"
+                checked={localShipmentPolicy === 'custom'}
+                onChange={(e) => setLocalShipmentPolicy(e.target.value)}
+                className="ms-3"
+              />
+              <label htmlFor="localCustom" className="ms-2">Custom</label>
+            </div>
+            {localShipmentPolicy === 'custom' && (
+              <input
+                type="number"
+                className="form-control mt-2"
+                placeholder="Custom Shipping Cost"
+                value={customLocalShipmentCost}
+                onChange={(e) => setCustomLocalShipmentCost(e.target.value)}
+              />
+            )}
+          </div>
+          <div className="col-md-6">
+            <label className="form-label">International Shipment Policy</label>
+            <div>
+              <input
+                type="radio"
+                id="internationalStandard"
+                name="internationalShipmentPolicy"
+                value="standard"
+                checked={internationalShipmentPolicy === 'standard'}
+                onChange={(e) => setInternationalShipmentPolicy(e.target.value)}
+              />
+              <label htmlFor="internationalStandard" className="ms-2">Standard</label>
+              <input
+                type="radio"
+                id="internationalFree"
+                name="internationalShipmentPolicy"
+                value="free"
+                checked={internationalShipmentPolicy === 'free'}
+                onChange={(e) => setInternationalShipmentPolicy(e.target.value)}
+              />
+              <label htmlFor="internationalFree" className="ms-2">Free Shipment</label>
+              <input
+                type="radio"
+                id="internationalCustom"
+                name="internationalShipmentPolicy"
+                value="custom"
+                checked={internationalShipmentPolicy === 'custom'}
+                onChange={(e) => setInternationalShipmentPolicy(e.target.value)}
+                className="ms-3"
+              />
+              <label htmlFor="internationalCustom" className="ms-2">Custom</label>
+            </div>
+            {internationalShipmentPolicy === 'custom' && (
+              <input
+                type="number"
+                className="form-control mt-2"
+                placeholder="Custom Shipping Cost"
+                value={customInternationalShipmentCost}
+                onChange={(e) => setCustomInternationalShipmentCost(e.target.value)}
+              />
+            )}
+          </div>
+        </div>
 
+        <div className="mb-3">
+          <label htmlFor="images" className="form-label">Hình ảnh sản phẩm</label>
+          <input
+            type="file"
+            id="images"
+            className="form-control"
+            multiple
+            onChange={imageHandler}
+          />
+          <div className="mt-3">
+            {images.length > 0 && (
+              <div className="d-flex flex-wrap">
+                {images.map((img, index) => (
+                  <div key={index} className="position-relative me-2 mb-2">
+                    <img src={img} alt={`Product ${index}`} className="img-thumbnail" style={{ maxWidth: '150px' }} />
+                    <button
+                      type="button"
+                      className="btn btn-danger position-absolute top-0 end-0"
+                      onClick={() => removeImage(index)}
+                    >
+                      <i className="bi bi-x">X</i>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
 
-            <Button type='submit'
-                        fullWidth
-                        disabled={loading?true:false}
-                        variant='contained'
-                        startIcon={<AddBoxOutlinedIcon/>}
-                        sx={{mt:3,mb:2}}
-            >Add Product</Button>
-        </Box>
-    </Box>
-  )
-}
+        <div className="mb-3">
+          <label htmlFor="status" className="form-label">Trạng Thái</label>
+          <select
+            id="status"
+            className="form-select"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            required
+          >
+            <option value="">Chọn Trạng Thái</option>
 
-export default AddNewProduct
+            <option value="active">Hoạt Động</option>
+            <option value="pause">Tạm Dừng</option>
+          </select>
+        </div>
+
+        <div className="text-center">
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? 'Adding...' : 'Cập Nhật'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default AddNewProduct;

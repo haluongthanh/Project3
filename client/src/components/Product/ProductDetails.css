@@ -40,16 +40,18 @@
     display: flex;
 }
 
-.container-fluid {
-    max-width: 1220px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 10px;
-}
-
 .product-image-carousel {
     width: 35%;
     text-align: center;
+}
+
+.breadcrumb-wrap ol>li+li:before {
+    padding: 0 14px;
+    content: "";
+    background-size: 5px;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* background-image: url(data:image/svg+xml,%3Csvg width='5' height='12' viewBox='0 0 5 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.97791 0.554644C4.99721 0.50084 5.00396 0.444304 4.99778 0.388264C4.99159 0.332224 4.97259 0.277777 4.94185 0.228032C4.91112 0.178287 4.86925 0.134218 4.81865 0.0983413C4.76804 0.0624647 4.70969 0.0354829 4.64692 0.0189366C4.58415 0.00239027 4.51819 -0.00339659 4.45282 0.00190639C4.38744 0.00720936 4.32392 0.0234984 4.26588 0.0498433C4.20785 0.0761883 4.15644 0.112073 4.11458 0.155449C4.07273 0.198826 4.04125 0.248843 4.02194 0.302647L0.0220929 11.4454C-0.0168925 11.554 -0.00392229 11.6715 0.0581499 11.772C0.120222 11.8724 0.226312 11.9476 0.353081 11.9811C0.47985 12.0145 0.616913 12.0034 0.734119 11.9502C0.851324 11.8969 0.939072 11.806 0.978058 11.6974L4.97791 0.554644Z' fill='%236D6E72'/%3E%3C/svg%3E%0A); */
 }
 
 .product-info {
@@ -120,13 +122,6 @@
 
 .product-block .product-wrap {
     padding: 0 24px 24px;
-}
-
-.container-fluid {
-    max-width: 1220px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 10px;
 }
 
 .breadcrumb-wrap {
@@ -224,4 +219,9 @@
 
 .product-info {
     position: relative;
+}
+
+.product-info .product-rating a {
+    color: #1982F9;
+    font-weight: 400;
 }

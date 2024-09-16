@@ -7,21 +7,21 @@ function generateVerificationCode() {
     return crypto.randomBytes(3).toString('hex').toUpperCase();
 }
 
-function sendVerificationEmail(user) {
-    const verificationCode = user.emailVerificationCode;
+function sendVerificationEmail(user, text) {
+
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: user.email, // Thay bằng địa chỉ email của bạn
-            pass: 'bsut seml phtg kxix', // Thay bằng mật khẩu email của bạn hoặc mã ứng dụng
+            user: process.env.EMAIL_SEND_NODEMAILER,
+            pass: process.env.PASSWORD_SEND_NODEMAILER,
         },
     });
 
     const mailOptions = {
-        from: user.email, // Thay bằng địa chỉ email của bạn
+        from: process.env.EMAIL_SEND_NODEMAILER,
         to: user.email,
         subject: 'Email Verification',
-        text: `Your verification code is: ${verificationCode}`,
+        html: text,
     };
 
     return transporter.sendMail(mailOptions);

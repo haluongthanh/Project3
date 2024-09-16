@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
+
 const productSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -23,7 +25,7 @@ const productSchema = new mongoose.Schema({
         default: 1
     },
     images: [{
-        id: { type: String },
+        id: { type: String, default: uuidv4 },
         url: { type: String }
     }],
     category: {
@@ -79,13 +81,14 @@ const productSchema = new mongoose.Schema({
             ref: "User"
         }
     },
-    productStatus: {
+    Status: {
         type: String,
         enum: ['active', 'pause'],
         default: 'pause'
-    }
+    },
+    createdAt: Date
 }, {
     timestamps: true
-})
+});
 
 module.exports = mongoose.model("Product", productSchema);

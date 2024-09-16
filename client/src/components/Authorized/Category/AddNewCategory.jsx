@@ -1,164 +1,132 @@
-import React,{useState,useEffect} from 'react'
-import {useDispatch,useSelector} from 'react-redux';
-import {toast} from 'react-toastify';
-
-import {Box, Typography, TextField, Button, TextareaAutosize, Grid,  MenuItem, FormControl, Select, InputLabel} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { addCategory, resetMutationResult, selectCategoryMutationResult } from '../../../redux/features/categorySlice';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import InsertPhotoRoundedIcon from '@mui/icons-material/InsertPhotoRounded';
 import PhotoIcon from '@mui/icons-material/Photo';
-import {addCategory,resetMutationResult,selectCategoryMutationResult,selectAllCategories} from '../../../redux/features/categorySlice';
-
 
 const AddNewCategory = () => {
-    const dispatch=useDispatch();
-    const {loading,success}=useSelector(selectCategoryMutationResult);
-    const [title,setTitle]=useState('');
-    const [description,setDescription]=useState('');
-    const [categoryStatus,setCategoryStatus]=useState('');
+    const dispatch = useDispatch();
+    const { loading, success } = useSelector(selectCategoryMutationResult);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [image, setImage] = useState('');
+    const [categoryImg, setCategoryImg] = useState('');
+    const [status, setStatus] = useState('');
 
-    const [Image,setImage]=useState('');
-    const [CategoryImg,setCategoryImg]=useState('');
-
-
-
-    const imageHandler=(e)=>{
-      if(e.target.name==='CategoryImg'){
-        setCategoryImg(e.target.files);
-        const reader=new FileReader();
-        reader.onload=()=>{
-          if(reader.readyState===2){
-            setImage(reader.result);
-          }
+    const imageHandler = (e) => {
+        if (e.target.name === 'CategoryImg') {
+            setCategoryImg(e.target.files);
+            const reader = new FileReader();
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    setImage(reader.result);
+                }
+            }
+            reader.readAsDataURL(e.target.files[0]);
         }
-        reader.readAsDataURL(e.target.files[0]);
-      }
     }
 
-
-    const handleSubmit=(e)=>{
+    const handleSubmit = (e) => {
         e.preventDefault();
-        if(CategoryImg===''){
-          toast.warn('Please select a image');
-          return false;
+        if (!title.trim()) {
+            toast.warn('Vui lòng nhập tiêu đề');
+            return;
         }
-        const jsonData=new FormData();
-        jsonData.append('title',title);
-        jsonData.append('description',description);
-        jsonData.append('categoryStatus',categoryStatus);
-        Object.keys(CategoryImg).forEach(key=>{
-          jsonData.append(CategoryImg.item(key).name,CategoryImg.item(key));
-        })
+        if (!categoryImg) {
+            toast.warn('Vui lòng chọn một hình ảnh');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('Status', status);
 
-        dispatch(addCategory({jsonData,toast}));
+        Object.keys(categoryImg).forEach(key => {
+            formData.append(categoryImg.item(key).name, categoryImg.item(key));
+        });
+
+        console.log('FormData:', Array.from(formData.entries())); 
+
+        dispatch(addCategory({ formData, toast }));
     }
+
     useEffect(() => {
-      
-      if(success){
-        dispatch(resetMutationResult());
-        setTitle('');
-        setDescription('');
-        setImage('');
-        setCategoryImg('');
-        setCategoryStatus('');
-      }
+        if (success) {
+            dispatch(resetMutationResult());
+            setTitle('');
+            setDescription('');
+            setImage('');
+            setCategoryImg('');
+            setStatus('');
+        }
     }, [success, dispatch]);
-    
-  return (
-    <Box sx={{marginTop:2, display:'flex',flexDirection:'column',alignItems:'center'}}>
-        <Typography component='div' variant='h5'>Add new category</Typography>
-        <Box component='form' onSubmit={handleSubmit}>
-              {/* <Grid container spacing={2} sx={{mt:'4px'}}>
-              <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <InputLabel id='category'>Parent Category</InputLabel>
-                    <Select required
-                            labelId='parent_category'
-                            id='parent_category'
-                            value={parent_category}
-                            label='parent_category'
-                            onChange={(e=>setParent(e.target.value))}>
-                            <MenuItem value={"65680c1293b89e3dcbf1e29d"} >None</MenuItem>
-                            
-                            {categories && categories.map((cat)=>
-                              
-                              <MenuItem key={cat._id} value={cat._id}>{cat.title}</MenuItem>
-                              )
-                            }
-                    </Select>
-                  </FormControl>
-              </Grid>
-              </Grid> */}
-            <TextField type='text'
-                        id='title'
-                        label='Title'
-                        name='title'
-                        margin='normal'
+
+    return (
+        <div className="container mt-3">
+            <h5 className="text-center">Thêm Mới Danh mục</h5>
+            <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label htmlFor="title" className="form-label">Tiêu Đề</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="title"
+                        name="title"
                         required
-                        fullWidth
-                        autoFocus
                         value={title}
-                        onChange={(e=>setTitle(e.target.value))}
-            />
-            <TextField type='text'
-                        id='description'
-                        label='Description'
-                        name='description'
-                        margin='normal'
-                        required
-                        fullWidth
-                        autoFocus
-                        value={description}
-                        onChange={(e=>setDescription(e.target.value))}
-            />
-            <Grid container style={{alignItems:'center',margin:'10px 0'}}>
-                <Grid item xs>
-                  <Box >
-                    {!Image? 
-                      <InsertPhotoRoundedIcon sx={{height:'60px',width:'60px'}}/>
-                      :
-                      <img src={Image} style={{height:'80px',width:'80px', borderRadius:'50%'}}/>
-                    }
-                  </Box>
-                </Grid>
-                <Grid>
-                  <Button fullWidth
-                          variant='contained'
-                          component='label'
-                          startIcon={<PhotoIcon/>}
-                  >
-                    <input type='file' 
-                            hidden
-                            name='CategoryImg'
-                            onChange={imageHandler}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
-                    Change Image
-                  </Button>
-                </Grid>
-            </Grid>
-            <Grid item xs={6}>
-                <FormControl sx={{width:'100%'}}>
-                    <InputLabel id='status'>Status</InputLabel>
-                    <Select required
-                            labelId='status'
-                            id='status'
-                            value={categoryStatus}
-                            label='status'
-                            onChange={(e=>setCategoryStatus(e.target.value))}> 
-                                <MenuItem value='pause'>Pause</MenuItem>
-                                <MenuItem value='active'>Active</MenuItem>
-                    </Select>
-                </FormControl>
-            </Grid>
-            <Button type='submit'
-                        fullWidth
-                        disabled={loading?true:false}
-                        variant='contained'
-                        startIcon={<AddBoxOutlinedIcon/>}
-                        sx={{mt:3,mb:2}}
-            >Add Category</Button>
-        </Box>
-    </Box>
-  )
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="description" className="form-label">Mô Tả</label>
+                    <textarea
+                        id="description"
+                        className="form-control"
+                        rows="4"
+                        required
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Ảnh</label>
+                    <input
+                        type="file"
+                        className="form-control"
+                        name="CategoryImg"
+                        onChange={imageHandler}
+                    />
+                    <div className="mt-3">
+                        {image && (
+                            <img src={image} alt="Selected" className="img-thumbnail" style={{ maxWidth: '150px', height: 'auto' }} />
+                        )}
+                    </div>
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="status" className="form-label">Trạng Thái</label>
+                    <select
+                        id="status"
+                        className="form-select"
+                        value={status || ''}
+                        onChange={(e) => setStatus(e.target.value)}
+                        required
+                    >
+                        <option value="">Chọn Trạng Thái</option>
+                        <option value="active">Hoạt Động</option>
+                        <option value="pause">Tạm Dừng</option>
+                    </select>
+                </div>
+                <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={loading}
+                >
+                    <AddBoxOutlinedIcon /> Thêm Mới
+                </button>
+            </form>
+        </div>
+    );
 }
 
-export default AddNewCategory
+export default AddNewCategory;

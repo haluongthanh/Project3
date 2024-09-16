@@ -5,7 +5,7 @@ import axiosPrivate from '../axiosPrivate';
 export const addBrand = createAsyncThunk('brand/addBrand', async({ jsonData, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.post(`/brands`, jsonData);
-        toast.success('Successfully added new brand.');
+        toast.success('Đã thêm thương hiệu mới thành công.');
         return data;
 
     } catch (error) {
@@ -23,19 +23,29 @@ export const getBrands = createAsyncThunk('brand/getBrands', async({ toast }, { 
         return rejectWithValue(error.response.data.message);
     }
 })
-export const getBrandsAuthorizeRole = createAsyncThunk('brand/getBrandsAuthorizeRole', async({ toast }, { rejectWithValue }) => {
+export const getBrandsAuthorizeRole = createAsyncThunk('brand/getBrandsAuthorizeRole', async({ search, currentPage,startDate,endDate,status, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPrivate.get('/athorized/brands');
+        let query = '';
+        if (search) query += `keyword=${search}&`;
+        if (currentPage) query += `page=${currentPage}&`;
+        if (startDate) query += `createdAt[gte]=${startDate}T00:00:00.000Z&`;
+        if (endDate) query += `createdAt[lte]=${endDate}T23:59:59.999Z&`;
+        if (status) query += `status=${status}&`;
+        query = query.endsWith('&') ? query.slice(0, -1) : query;
+        const { data } = await axiosPrivate.get(`/athorized/brands?${query}`);
+
         return data;
+
     } catch (error) {
         toast.error(error.response.data.message);
         return rejectWithValue(error.response.data.message);
     }
 })
-
 export const deleteBrand = createAsyncThunk('brand/deleteBrand', async({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.delete(`/brands/${id}`);
+        toast.success('Đã xóa thương hiệu thành công.');
+
         return data;
 
     } catch (error) {
@@ -58,7 +68,7 @@ export const brandDetails = createAsyncThunk('brand/brandDetails', async({ id, t
 export const updateBrand = createAsyncThunk('brand/updateBrand', async({ id, jsonData, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.put(`/brands/${id}`, jsonData);
-        toast.success('Brand updated.')
+        toast.success('Đã cập nhật thương hiệu thành công.')
         return data;
     } catch (error) {
         toast.error(error.response.data.message);
@@ -69,9 +79,8 @@ const brandSlice = createSlice({
     name: 'brand',
     initialState: {
         mutationResult: { success: false },
-        brandlist: {},
-        brandDetails: {},
-        brandslistAuthorizeRole: {}
+        brandlist: { brands:[] },
+        brandDetails: {}
     },
     reducers: {
         resetMutationResult: (state) => {
@@ -103,17 +112,19 @@ const brandSlice = createSlice({
             state.brandlist.loading = false;
             state.brandlist.error = action.payload;
         },
-        // get all brand list by role
         [getBrandsAuthorizeRole.pending]: (state, action) => {
-            state.brandslistAuthorizeRole.loading = true;
+            state.brandlist.loading = true;
         },
         [getBrandsAuthorizeRole.fulfilled]: (state, action) => {
-            state.brandslistAuthorizeRole.loading = false;
-            state.brandslistAuthorizeRole.brands = action.payload.brands;
+            state.brandlist.loading = false;
+            state.brandlist.brands = action.payload.brands;
+            state.brandlist.brandCount = action.payload.brandCount;
+            state.brandlist.resultPerPage = action.payload.resultPerPage;
+            state.brandlist.filteredBrandsCount = action.payload.filteredBlogsCount;
         },
         [getBrandsAuthorizeRole.rejected]: (state, action) => {
-            state.brandslistAuthorizeRole.loading = false;
-            state.brandslistAuthorizeRole.error = action.payload;
+            state.brandlist.loading = false;
+            state.brandlist.error = action.payload;
         },
         //delete a brand
         [deleteBrand.pending]: (state, action) => {
@@ -157,7 +168,6 @@ const brandSlice = createSlice({
 export const selectBrandMutationResult = (state) => state.brand.mutationResult;
 export const selectAllBrands = (state) => state.brand.brandlist;
 export const selectBrandDetails = (state) => state.brand.brandDetails;
-export const selectAllBrandAuthorizeRole = (state) => state.brand.brandslistAuthorizeRole;
 export const { resetMutationResult } = brandSlice.actions;
 
 export default brandSlice.reducer;

@@ -1,61 +1,73 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
+const { v4: uuidv4 } = require('uuid'); 
+
 const orderSchema = new mongoose.Schema({
+    orderCode: {
+        type: String,
+        unique: true, 
+        required: true,
+        default: () => uuidv4(),
+    },
     shippingInfo: {
         address: {
             type: String,
-            requred: true
+            required: true
         },
-        state: {
+        province: {
             type: String,
-            requred: true
+            required: true
         },
-        city: {
+        district: {
             type: String,
-            requred: true
+            required: true
         },
-        country: {
+        ward: {
             type: String,
-            requred: true
-        },
-        zipCode: {
-            type: Number,
-            requred: true
+            required: true
         },
         phone: {
             type: Number,
-            requred: true
+            required: true
         },
+        name: {
+            type: String,
+            required: true,
+        }
     },
     orderItems: [{
         price: {
             type: Number,
-            requred: true
+            required: true
         },
         quantity: {
             type: Number,
-            requred: true
+            required: true
         },
         product: {
             type: mongoose.Schema.ObjectId,
             ref: "Product",
-            requred: true
+            required: true
         },
     }],
     user: {
         type: mongoose.Schema.ObjectId,
         ref: "User",
-        requred: true
+        required: true
     },
-    // paymentInfo:{
-    //     id:{
-    //         type:String,
-    //         required:true
-    //     },
-    //     status:{
-    //         type:String,
-    //         required:true,
-    //     }
-    // },
+    paymentMethods: {
+        type: String,
+        enum: ['COD', 'Vnpay'],
+        default: 'COD'
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['paid', 'unpaid'],
+        default: 'unpaid'
+    },
+    txnRef: {
+        type: String,
+    },
     paidAt: {
         type: Date,
         default: Date.now,
@@ -88,8 +100,16 @@ const orderSchema = new mongoose.Schema({
         default: 'Processing'
     },
     deliveredAt: Date,
+    CancelAt: Date
 }, {
-    timestamps: true,
-})
+    timestamps: true
+});
+
+orderSchema.pre('save', function (next) {
+    if (this.isNew) {
+        this.orderCode = 'ORD-' + crypto.randomBytes(4).toString('hex').toUpperCase();
+    }
+    next();
+});
 
 module.exports = mongoose.model('Order', orderSchema);

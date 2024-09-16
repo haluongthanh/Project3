@@ -61,7 +61,7 @@ const UpdateProfile = () => {
   return (
     <Box sx={{maxWidth:'550px', m:'0 auto', display:'flex', flexGrow:1, alignItems:'center'}}>
         <Box sx={{m:1,p:2, textAlign:'center'}}>
-          <Typography component='h1' variant='h6'>Update Profile</Typography>
+          <Typography component='h1' variant='h6'>Cập Nhật Thông Tin Tài Khoản</Typography>
           <Box component='form' onSubmit={handleSubmit}>
           <TextField
               type='text'
@@ -77,7 +77,7 @@ const UpdateProfile = () => {
           />
           <TextField type='text'
                         id='name'
-                        label='Name'
+                        label='Họ và Tên'
                         name='name'
                         margin='normal'
                         required
@@ -113,7 +113,7 @@ const UpdateProfile = () => {
                             name='avatar'
                             onChange={imageHandler}
                     />
-                    Change Profile Picture
+                    Thay đổi hình ảnh đại diện
                   </Button>
                 </Grid>
             </Grid>
@@ -122,7 +122,7 @@ const UpdateProfile = () => {
                         disabled={loading?true:false}
                         variant='contained'
                         sx={{mt:3,mb:2}}
-                        >Update Profile
+                        >Cập Nhật
             </Button>
           </Box>
         </Box>

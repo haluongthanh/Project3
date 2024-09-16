@@ -14,7 +14,7 @@
 
 .card-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-column-gap: 20px;
     width: 98%;
     margin: 0 auto;
@@ -44,13 +44,13 @@
 
 @media only screen and (max-width:1100px) {
     .card-container {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
 
 @media only screen and (max-width:960px) {
     .card-container {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
     }
 }
 
@@ -62,10 +62,294 @@
     }
 }
 
-@media only screen and (max-width:370px) {
+@media only screen and (max-width:392px) {
+    .card-container {
+        grid-template-columns: 1fr 1fr;
+        width: 50%;
+        grid-row-gap: 25px;
+    }
+}
+
+@media only screen and (max-width:367px) {
     .card-container {
         grid-template-columns: 1fr;
         width: 90%;
         grid-row-gap: 25px;
     }
+}
+
+
+/*  */
+
+@media (min-width: 992px) {
+    .collection-layout .listProduct-row {
+        padding: 0 4px;
+    }
+}
+
+.listProduct-row {
+    display: flex;
+    display: -ms-flex;
+    flex-wrap: wrap;
+    padding: 0 0;
+}
+
+@media (min-width: 992px) {
+    .listProduct-row .proloop {
+        -webkit-flex: 0 0 20%;
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+}
+
+.listProduct-row .proloop {
+    -webkit-flex: 0 0 50%;
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+.proloop {
+    padding: 0 4px;
+    margin-bottom: 8px;
+    outline: none;
+}
+
+.proloop .proloop-block {
+    display: block;
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: inset 1px 0px 0px #EDEDED, inset -1px 0px 0px #EDEDED, inset 0px 1px 0px #EDEDED, inset 0px -1px 0px #EDEDED;
+}
+
+.proloop .proloop-img {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 10px;
+}
+
+@media (max-width: 567px) {
+    .proloop .proloop-img {
+        padding: 8px;
+    }
+}
+
+.proloop .proloop-label--top {
+    justify-content: space-between;
+    column-gap: 8px;
+}
+
+.proloop .proloop-label {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding-bottom: 10px;
+    height: 34px;
+    white-space: nowrap;
+}
+
+.proloop .proloop-img .aspect-ratio {
+    position: relative;
+    padding-bottom: 100%;
+    display: block;
+    border-radius: 4px;
+}
+
+.fade-box {
+    position: relative;
+    overflow: hidden;
+}
+
+.proloop .proloop-img .aspect-ratio picture {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(0%);
+    position: absolute;
+    left: 0;
+    top: 0;
+    -webkit-transform: translate(0%, 0%);
+    transform: translate(0%, 0%);
+    width: 100%;
+    height: 100%;
+    -o-object-fit: contain;
+    object-fit: contain;
+    -webkit-transition: all 0.5s ease 0s;
+    transition: all 0.5s ease 0s;
+}
+
+.proloop .proloop-img .aspect-ratio img {
+    width: 100%;
+    border-radius: 4px;
+}
+
+.proloop .proloop-button {
+    width: calc(100% - 20px);
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    left: 0;
+    right: 0;
+    bottom: -30px;
+    margin: auto;
+    border-radius: 0;
+    background: rgba(5, 5, 5, 0.6);
+    -webkit-transition: all ease 0.5s;
+    -o-transition: all ease 0.5s;
+    transition: all ease 0.5s;
+    display: none;
+}
+
+.proloop .proloop-button button {
+    border-radius: 0;
+    text-transform: uppercase;
+    font-size: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #fff;
+    width: 50%;
+    padding: 6px 5px;
+    outline: none;
+    font-weight: 500;
+    position: relative;
+}
+
+.proloop .proloop-button button {
+    border-radius: 0;
+    text-transform: uppercase;
+    font-size: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #fff;
+    width: 50%;
+    padding: 6px 5px;
+    outline: none;
+    font-weight: 500;
+    position: relative;
+}
+
+.proloop .proloop-detail {
+    padding: 6px 16px 16px;
+    width: 100%;
+}
+
+@media (max-width: 567px) {
+    .proloop .proloop-detail {
+        padding: 8px 8px 8px;
+    }
+}
+
+.proloop .proloop-label--bottom {
+    overflow-x: scroll;
+}
+
+.proloop .proloop-label {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding-bottom: 10px;
+    height: 34px;
+    white-space: nowrap;
+}
+
+.proloop .proloop-detail .proloop-name {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+}
+
+.proloop .proloop-detail .proloop-name a {
+    color: #333333;
+    line-height: 20px;
+    height: 40px;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+}
+
+.proloop .proloop-detail .proloop-price {
+    margin: 0 0 8px;
+    position: relative;
+}
+
+.proloop .proloop-detail .proloop-price .proloop-price--compare {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 16px;
+    color: #6D6E72;
+}
+
+.proloop .proloop-detail .proloop-price .proloop-price--default {
+    display: flex;
+    align-items: center;
+}
+
+.proloop .proloop-detail .proloop-price .proloop-price--highlight {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #E30019;
+}
+
+.proloop .proloop-detail .proloop-price span {
+    display: inline-block;
+}
+
+.proloop .proloop-detail .proloop-price .proloop-label--on-sale {
+    padding: 0 4px;
+    background: #FFEDED;
+    border-radius: 2px;
+    color: #E30019;
+    border: 1px solid #E30019;
+    line-height: 16px;
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+.proloop .proloop-detail .proloop-price span {
+    display: inline-block;
+}
+
+.proloop .proloop-detail .proloop-rating {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+}
+
+.proloop .proloop-detail .proloop-rating span.number {
+    color: #FF8A00;
+    font-weight: 600;
+}
+
+.proloop .proloop-detail .proloop-rating span {
+    display: inline-flex;
+}
+
+.proloop .proloop-detail .proloop-rating span.icon {
+    margin: 0 8px 1px 2px;
+}
+
+.proloop .proloop-detail .proloop-rating span {
+    display: inline-flex;
+}
+
+.proloop .proloop-detail .proloop-rating span.icon svg {
+    height: 12px;
+    width: 12px;
+}
+
+.proloop .proloop-detail .proloop-rating span.count {
+    color: #6D6E72;
+    font-weight: 400;
+}
+
+.proloop .proloop-detail .proloop-rating span {
+    display: inline-flex;
 }

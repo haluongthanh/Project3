@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSelector ,useDispatch} from 'react-redux';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Mousewheel, Keyboard, Autoplay } from "swiper";
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -12,6 +11,7 @@ import { IMAGE_BASEURL } from '../../constants/baseURL';
 import "./type.css"
 import noImg from "../../images/gallery.png"
 import {toast} from 'react-toastify';
+import BoxShadowLoader from '../Skeletons/BoxShadowLoader';
 
 const BannersBottom = ({images}) => {
   const dispatch = useDispatch();
@@ -22,10 +22,12 @@ const BannersBottom = ({images}) => {
   useEffect(() => {
     dispatch(fetchBannerData({toast})); 
   }, [dispatch]);
+  if(banners==undefined)return <BoxShadowLoader/>
+
   return (
     <div className="index-banner--list">
       {banners && banners.map((banner, index) => {
-        if (bannersToShow < maxBannersToShow && banner.bannerStatus === "bottom") {
+        if (bannersToShow < maxBannersToShow && banner.Status === "bottom") {
           bannersToShow++;
 
           return (

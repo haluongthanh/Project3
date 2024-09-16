@@ -21,7 +21,7 @@ const UpdatePassword = () => {
       e.preventDefault();
 
       if(newPassword !== confirmPassword){
-        toast.warn('New & confirm password not matched.');
+        toast.warn('Mật khẩu mới và xác nhận không khớp.');
         return;
       }
       const jsonData={
@@ -42,14 +42,14 @@ const UpdatePassword = () => {
     <Box sx={{maxWidth:'550px', m:'0 auto',textAlign:'center'}}>
         <Box sx={{m:1}}>
         <Typography component='h1' 
-                    variant='h6'>Change Password
+                    variant='h6'>Đổi mật khẩu
         </Typography>
         
 
         <Box component='form' onSubmit={handleSubmit}>
         <TextField type='password'
                         id='oldPassword'
-                        label='Old Password'
+                        label='Mật Khẩu Cũ'
                         name='oldPassword'
                         margin='normal'
                         required
@@ -60,7 +60,7 @@ const UpdatePassword = () => {
         />
         <TextField type='password'
                         id='newPassword'
-                        label='New Password'
+                        label='Mật Khẩu Mới'
                         name='newPassword'
                         margin='normal'
                         required
@@ -70,7 +70,7 @@ const UpdatePassword = () => {
         />
         <TextField type='password'
                         id='confirmPassword'
-                        label='Confirm Password'
+                        label='Xác nhận Mật khẩu'
                         name='confirmPassword'
                         margin='normal'
                         required
@@ -83,7 +83,7 @@ const UpdatePassword = () => {
                         disabled={loading?true:false}
                         variant='contained'
                         sx={{mt:3,mb:2}}
-                        >Update
+                        >Cập Nhật
         </Button>
         </Box>
         </Box>

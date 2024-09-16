@@ -9,8 +9,9 @@ const brandSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        reuired: [true, 'Plaese enter brand description.']
+        required: [true, 'Plaese enter brand description.']
     },
+
     addedBy: {
         type: mongoose.Schema.ObjectId,
         ref: "User",
@@ -19,7 +20,7 @@ const brandSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "User",
     },
-    brandStatus: {
+    Status: {
         type: String,
         enum: ['active', 'pause'],
         default: 'pause'

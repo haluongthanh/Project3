@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 
 const categorySchema = new mongoose.Schema({
-    // parent_category: {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: "category",
-    //     default: "65680c1293b89e3dcbf1e29d"
-    // },
-
     title: {
         type: String,
         required: [true, 'Please enter category name.'],
@@ -28,7 +22,7 @@ const categorySchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "User",
     },
-    categoryStatus: {
+    Status: {
         type: String,
         enum: ['active', 'pause'],
         default: 'pause'

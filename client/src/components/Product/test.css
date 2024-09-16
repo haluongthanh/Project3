@@ -1,0 +1,466 @@
+.collection-body {
+    background: #fff;
+    border-radius: 4px;
+}
+
+
+
+.collection-filter {
+    padding: 24px;
+}
+
+.collection-filter .filter-wrap {
+    position: relative;
+    display: flex;
+}
+
+@media (min-width: 992px) {
+    .collection-filter .filter-total .filter-total--title.active {
+        border: 1px solid #1982F9;
+        position: relative;
+        z-index: 11;
+    }
+}
+
+.collection-filter .filter-total .filter-total--title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 4px 10px;
+    text-align: center;
+    background: #FFFFFF;
+    border: 1px solid #CFCFCF;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 36px;
+}
+
+.collection-filter .filter-total .filter-total--title svg {
+    width: 14px;
+    height: 14px;
+    margin-right: 9px;
+    fill: #ffffff;
+}
+
+svg.icon {
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    fill: currentColor;
+    vertical-align: middle;
+    background: none;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.collection-filter .filter-total .filter-total--title span {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+@media (min-width: 992px) {
+    .collection-filter .filter-total .filter-total--title.active .icon-arrow {
+        width: 27px;
+        height: 14px;
+        top: 30px;
+        left: 25px;
+        position: absolute;
+        overflow: hidden;
+    }
+}
+
+.collection-filter .filter-total .filter-total--content.active {
+    display: block;
+}
+
+.collection-filter .filter-total .filter-total--content {
+    display: none;
+    background-color: #fff;
+    position: fixed;
+    border-radius: 4px 4px 0 0;
+    max-height: 70vh;
+    width: 100%;
+    top: auto;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    white-space: normal;
+    z-index: 14;
+    overflow-y: auto;
+}
+
+@media (min-width: 992px) {
+    .collection-filter .filter-total .filter-total--content {
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+        border-radius: 4px;
+        width: 900px;
+        max-width: 900px;
+        max-height: 85vh;
+        min-width: 382px;
+        position: absolute;
+        top: 45px;
+        right: auto;
+        bottom: auto;
+        z-index: 10;
+    }
+}
+
+.collection-filter .filter-total .filter-total--content-head {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 16px 10px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #fff;
+}
+
+.collection-filter .filter-total .filter-total--content-head .filter-tags-btn {
+    width: 85px;
+    position: relative;
+    text-align: right;
+}
+
+.collection-filter .filter-total .filter-total--content-head .filter-tags-btn .filter-btn-close {
+    background-color: #fff;
+    border: 1px solid #CFCFCF;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 8px 10px;
+    color: #000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 75px;
+    margin-left: auto;
+}
+
+.collection-filter .filter-total .filter-total--content-head .filter-tags-btn .filter-btn-close svg {
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+}
+
+.collection-filter .filter-total .filter-total--content-body .list-filter--main {
+    display: flex;
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0 6px 16px;
+}
+
+.collection-filter .filter-total .filter-group {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 10px;
+}
+
+@media (min-width: 992px) {
+    .collection-filter .filter-total .filter-group {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
+.collection-filter .filter-group .filter-group--block {
+    position: relative;
+}
+
+.collection-filter .filter-total .filter-group .filter-group--title {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.collection-filter .filter-group .filter-group--title {
+    line-height: 18px;
+}
+
+.collection-filter .filter-group .filter-group--content ul {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+    gap: 10px 8px;
+    padding-right: 2px;
+    overflow-y: auto;
+    max-height: 220px;
+    list-style-type: none;
+}
+
+.collection-filter .filter-group .filter-group--content ul li {
+    padding-left: 0;
+    width: auto;
+    position: relative;
+    cursor: pointer;
+}
+
+.collection-filter .filter-group .filter-group--content ul li input[type="radio"],
+.collection-filter .filter-group .filter-group--content ul li input[type="checkbox"] {
+    display: none;
+}
+
+.collection-filter .filter-group .filter-group--content ul li label {
+    padding: 7px 10px;
+    border: 1px solid #CFCFCF;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    margin: 0;
+    font-weight: 400;
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .collection-filter .filter-total .filter-total--content-body .filter-control {
+        padding: 12px 10px;
+    }
+}
+
+.collection-filter .filter-total .filter-total--content-body .filter-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.05);
+    padding: 8px;
+    bottom: 0;
+    margin: 0;
+    position: sticky;
+    width: 100%;
+    z-index: 2;
+}
+
+.collection-filter .filter-control .filter-button .btn-filter--unselect {
+    border: 1px solid red;
+    color: red;
+}
+
+.collection-filter .filter-control .filter-button .btn-filter--apply {
+    background-color: #2485f6;
+    color: #fff;
+}
+
+.collection-filter .filter-control .filter-button .btn-filter--unselect,
+.collection-filter .filter-control .filter-button .btn-filter--apply {
+    border-radius: 4px;
+    display: inline-block;
+    line-height: 14px;
+    padding: 10px 0;
+    text-align: center;
+    width: 140px;
+    position: relative;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.collection-filter .filter-control a+a {
+    margin-left: 8px;
+}
+
+.collection-filter .sortby-control {
+    position: relative;
+}
+
+.collection-filter .sortby-control .listbox__button {
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    outline: none;
+    border: 1px solid #CFCFCF;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 14px;
+    padding: 5px 29px 5px 11px;
+    width: 100%;
+    background: transparent;
+    text-align: left;
+    display: inline-flex;
+    align-items: center;
+}
+
+.collection-filter .sortby-control .listbox__button svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.collection-filter .sortby-control .listbox__button .listbox__text {
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-right: 5px;
+}
+
+.collection-filter .sortby-control .listbox__button .listbox__value {
+    font-weight: 600;
+}
+
+.collection-filter .sortby-control .listbox__list-wrapper {
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    margin: 0;
+    width: 170px;
+    border-radius: 4px;
+    top: 110%;
+    background: #FFFFFF;
+    border: 1px solid #CFCFCF;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.collection-filter .sortby-control .listbox__list-wrapper ul {
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 100%;
+    list-style-type: none;
+}
+
+.collection-filter.fixed-head {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    max-width: 100%;
+    margin: 0 auto;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 9;
+    padding: 8px;
+    top: 55px;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+dl,
+ol,
+ul {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.collection-filter.fixed-head .filter-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    white-space: nowrap;
+}
+
+.collection-filter .range-slider .range-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 0 10px;
+    position: relative;
+}
+
+.collection-filter .filter-total .range-slider .range-price>span {
+    width: 40%;
+}
+
+.collection-filter .range-slider .range-price input {
+    padding: 4px 8px;
+    text-align: center;
+    border: 1px solid #CFCFCF;
+    border-radius: 4px;
+    color: #111;
+    cursor: pointer;
+    position: relative;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    width: 100%;
+    white-space: nowrap;
+    outline: none;
+}
+
+.collection-filter .filter-total .range-slider .range-price>span {
+    width: 40%;
+}
+
+.collection-filter .sortby-control .listbox__list-wrapper ul li {
+    display: flex;
+    position: relative;
+    cursor: pointer;
+    padding: 7px 16px;
+    background: #fff;
+}
+
+.collection-filter .sortby-control .listbox__list-wrapper ul li.active label {
+    font-weight: 600;
+}
+
+.collection-filter .sortby-control .listbox__list-wrapper ul li label {
+    margin-bottom: 0;
+    display: block;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.collection-filter .sortby-control .listbox__list-wrapper ul li input {
+    opacity: 0;
+    visibility: hidden;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.collection-filter .collection-sortby {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.collection-filter .sortby-control .listbox__list-wrapper.show-sort {
+    display: block;
+    visibility: visible;
+    opacity: 1;
+}
+
+.filter-search .filtter-search-input {
+    padding: 8px 50px 8px 15px;
+    height: 36px;
+    background: #fff;
+    border: 1px solid #CFCFCF;
+    font-size: 12px;
+    margin: 0;
+    width: 100%;
+    display: inline-block;
+    border-radius: 4px;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+ .collection-filter .filter-group .filter-group--content ul li.active label {
+    font-weight: 600;
+}
+ .collection-filter .filter-group .filter-group--content ul li.active label,  .collection-filter .filter-group .filter-group--content ul li:hover label {
+    background: #ffffff;
+    border: 1px solid #1982F9;
+    color: #1982F9;
+}
+ .collection-filter .filter-group .filter-group--content ul li label {
+    padding: 7px 10px;
+    border: 1px solid #CFCFCF;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    margin: 0;
+    font-weight: 400;
+    width: 100%;
+}

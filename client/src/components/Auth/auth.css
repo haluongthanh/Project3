@@ -1,0 +1,154 @@
+.layout-account .wrapbox-content-account .userbox {
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.layout-account {
+    padding: 60px 0;
+}
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.userbox {
+    padding: 40px;
+    overflow-y: auto;
+    background: #F6F6F6;
+    border-radius: 10px;
+}
+
+.userbox .accounttype {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 30px;
+}
+
+.userbox .accounttype h1,
+.userbox .accounttype h2 {
+    font-size: 20px;
+    margin: 0;
+    text-transform: uppercase;
+    line-height: 32px;
+    font-weight: 600;
+    padding-bottom: 15px;
+    position: relative;
+}
+
+.layout-account .large_form {
+    position: relative;
+}
+
+.layout-info-account .large_form,
+.layout-account .large_form {
+    margin-bottom: 20px;
+}
+
+.layout-info-account .large_form .icon-field,
+.layout-account .large_form .icon-field {
+    letter-spacing: 1px;
+    display: block;
+    font-weight: 500;
+    padding: 0;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.layout-info-account .large_form input[type=email],
+.layout-info-account .large_form input[type=password],
+.layout-info-account .large_form input[type=date],
+.layout-info-account .large_form input[type=text],
+.layout-account .large_form input[type=email],
+.layout-account .large_form input[type=password],
+.layout-account .large_form input[type=date],
+.layout-account .large_form input[type=text] {
+    width: 100%;
+    height: 40px;
+    background: #FFFFFF;
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+    outline: none;
+    color: #111111;
+    padding: 0 15px;
+    font-size: 14px;
+    font-weight: 400;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+button,
+input {
+    overflow: visible;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.userbox .action-customer .button.btn-login,
+.userbox .action-customer .button.btn-save {
+    margin-top: 24px;
+}
+
+.userbox .action-customer .button {
+    display: inline-block;
+    padding: 0 30px;
+    height: 45px;
+    line-height: 45px;
+    text-transform: uppercase;
+    font-weight: 600;
+    width: 100%;
+    outline: none;
+    background-color: red;
+    color: white;
+}
+
+[type=button]:not(:disabled),
+[type=reset]:not(:disabled),
+[type=submit]:not(:disabled),
+button:not(:disabled) {
+    cursor: pointer;
+}
+
+
+/* .button {
+    position: relative;
+    display: inline-block;
+    padding: 10px 28px;
+    line-height: normal;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    color: #fff;
+    background-color: var(red);
+    border: 1px solid var(red);
+    border-radius: 4px;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    z-index: 1;
+    overflow: hidden;
+    outline: none !important;
+    cursor: pointer;
+} */
+
+[type=button],
+[type=reset],
+[type=submit],
+button {
+    -webkit-appearance: button;
+}

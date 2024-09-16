@@ -33,17 +33,17 @@ const Registration = () => {
     }
     const handleSubmit=(e)=>{
         e.preventDefault();
-        if(avatar===''){
-          toast.warn('Please select a profile picture');
-          return false;
-        }
+        // if(avatar===''){
+        //   toast.warn('Please select a profile picture');
+        //   return false;
+        // }
         const formData=new FormData();
         formData.set('name',name);
         formData.set('email',email);
         formData.set('password',password);
-        Object.keys(avatar).forEach(key=>{
-          formData.append(avatar.item(key).name,avatar.item(key));
-        })
+        // Object.keys(avatar).forEach(key=>{
+        //   formData.append(avatar.item(key).name,avatar.item(key));
+        // })
         dispatch(registration({formData,toast}));
     }
     const handleKeepMeLoggedIn=()=>{
@@ -55,7 +55,7 @@ const Registration = () => {
         <Avatar sx={{m:1,bgcolor:'primary.main'}}>
             <NoAccountsIcon/>
         </Avatar>
-        <Typography component='div' variant='h5'>Registration</Typography>
+        <Typography component='div' variant='h5'>Đăng ký</Typography>
 
         <Box component='form' onSubmit={handleSubmit}>
             <TextField type='text'
@@ -82,7 +82,7 @@ const Registration = () => {
             />
             <TextField type='password'
                         id='password'
-                        label='Password'
+                        label='Mật Khẩu'
                         name='password'
                         margin='normal'
                         required
@@ -91,7 +91,7 @@ const Registration = () => {
                         value={password}
                         onChange={(e=>setPassword(e.target.value))}
             />
-            <Grid container style={{alignItems:'center',margin:'10px 0'}}>
+            {/* <Grid container style={{alignItems:'center',margin:'10px 0'}}>
                 <Grid item xs>
                   <Avatar sx={{m:1,bgcolor:'primary.main', height:'80px',width:'80px',fontSize:'5.35rem'}}>
                     {!previewAvatar ?
@@ -115,12 +115,12 @@ const Registration = () => {
                     Upload Profile Picture
                   </Button>
                 </Grid>
-            </Grid>
+            </Grid> */}
             <Button type='submit'
                         fullWidth
                         variant='contained'
                         sx={{mt:3,mb:2}}
-            >Registration & Login</Button>
+            >Đăng Ký</Button>
 
             <Grid container style={{}}>
                 <Grid item xs>

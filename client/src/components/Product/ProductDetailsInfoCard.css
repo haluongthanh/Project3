@@ -1,10 +1,3 @@
-.container-fluid {
-    max-width: 1220px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 10px;
-}
-
 .product-info .product-name {
     margin-bottom: 8px;
 }
@@ -40,4 +33,82 @@
         flex: 0 0 65%;
         max-width: 65%;
     }
+}
+
+.product-info .product-price span.pro-percent {
+    font-size: 12px;
+    display: inline-block;
+    padding: 3px 8px;
+    margin-left: 12px;
+    color: #E30019;
+    border: 1px solid #E30019;
+    border-radius: 4px;
+    vertical-align: text-bottom;
+    white-space: nowrap;
+}
+
+.product-info .product-actions .action-buys {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.product-info .product-actions button {
+    text-align: center;
+    padding: 10px 10px 14px;
+    color: #fff;
+}
+
+.product-info .product-actions button {
+    text-align: center;
+    padding: 10px 10px 14px;
+    color: #fff;
+}
+
+@media (min-width: 992px) {
+    button.btn-buynow {
+        width: 55%;
+    }
+}
+
+@media (min-width: 992px) {
+    .button:hover,
+    .button:focus {
+        color: #ffffff;
+    }
+}
+
+.button.btn-buynow {
+    width: 100%;
+    min-height: 50px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    background-color: red;
+}
+
+.product-info .product-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.product-info [class^="product-"] {
+    margin: 0 0 16px 0;
+}
+
+.product-info .product-actions {
+    margin: 0;
+}
+
+.product-info [class^="product-"] {
+    margin: 0 0 16px 0;
+}
+
+.product-actions .maintext {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.product-actions button span {
+    display: block;
 }

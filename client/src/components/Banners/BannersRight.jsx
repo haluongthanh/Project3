@@ -11,6 +11,7 @@ import { IMAGE_BASEURL } from '../../constants/baseURL';
 import "./type.css";
 import noImg from "../../images/gallery.png"
 import {toast} from 'react-toastify';
+import BoxShadowLoader from '../Skeletons/BoxShadowLoader';
 
 const BannersRight = ({ images }) => {
   const dispatch = useDispatch();
@@ -21,10 +22,12 @@ const BannersRight = ({ images }) => {
   useEffect(() => {
     dispatch(fetchBannerData({toast})); 
   }, [dispatch]);
+  if(banners==undefined)return <BoxShadowLoader/>
+
   return (
     <div className="index-banner--list">
       {banners && banners.map((banner, index) => {
-        if (bannersToShow < maxBannersToShow && banner.bannerStatus === "right") {
+        if (bannersToShow < maxBannersToShow && banner.Status === "right") {
           bannersToShow++;
 
           return (

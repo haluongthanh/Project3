@@ -6,6 +6,6 @@ const router=express.Router();
 
 router.route('/reviews')
         .put(isAuthenticated,createProductReview).get(getProductReviews)
-        .delete(isAuthenticated,authorizeRoles('admin'),deleteProductReview);
+        .delete(isAuthenticated,authorizeRoles('admin',  'manage','staff'),deleteProductReview);
 
 module.exports=router;

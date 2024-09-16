@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosPublic } from '../axiosPublic';
 import axiosPrivate from '../axiosPrivate';
+import { toast } from 'react-toastify';
 
-export const registration = createAsyncThunk('auth/registration', async({ formData, toast }, { rejectWithValue }) => {
+export const registration = createAsyncThunk('auth/registration', async ({ formData, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPublic.post(`/register`, formData, { headers: { 'Content-type': 'multipart/form-data' } });
-        toast.success('Successfully regstered.');
-        console.log(data.user);
+
+        const { data } = await axiosPublic.post(`/register`, formData,);
+        toast.success('Đăng ký thành công.');
         return data;
 
     } catch (error) {
@@ -14,10 +15,10 @@ export const registration = createAsyncThunk('auth/registration', async({ formDa
         return rejectWithValue(error.response.data.message);
     }
 })
-export const login = createAsyncThunk('auth/login', async({ jsonData, toast }, { rejectWithValue }) => {
+export const login = createAsyncThunk('auth/login', async ({ jsonData, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPublic.post(`/login`, jsonData);
-        toast.success('Successfully logged in.');
+        toast.success('Đã đăng nhập thành công.');
         return data;
 
     } catch (error) {
@@ -25,10 +26,21 @@ export const login = createAsyncThunk('auth/login', async({ jsonData, toast }, {
         return rejectWithValue(error.response.data.message);
     }
 })
-export const loginGoogle = createAsyncThunk('auth/google', async({ formData, toast }, { rejectWithValue }) => {
+export const forgotPassword = createAsyncThunk('auth/forgotPassword', async ({ jsonData, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPublic.post(`/auth/google`, formData);
-        toast.success('Successfully logged in.');
+        const { data } = await axiosPublic.post(`/forgotPassword`, jsonData);
+        toast.success('Đã quên mật khẩu thành công. Vui lòng kiểm tra email quên mật khẩu.');
+        return data;
+
+    } catch (error) {
+        toast.error(error.response.data.message);
+        return rejectWithValue(error.response.data.message);
+    }
+})
+export const resetPassword = createAsyncThunk('auth/resetPassword', async ({ jsonData, toast }, { rejectWithValue }) => {
+    try {
+        const { data } = await axiosPublic.post(`/resetPassword`, jsonData);
+        toast.success('Đặt lại mật khẩu thành công. ');
         return data;
 
     } catch (error) {
@@ -37,10 +49,21 @@ export const loginGoogle = createAsyncThunk('auth/google', async({ formData, toa
     }
 })
 
-export const logout = createAsyncThunk('auth/logout', async({ toast }, { rejectWithValue }) => {
+export const LoginGoogle = createAsyncThunk('auth/loginGoogle', async ({ jsonData, toast }, { rejectWithValue }) => {
+    try {
+        const { data } = await axiosPublic.post(`/auth/googleLogin`, jsonData);
+        toast.success('Đã đăng nhập thành công.');
+        return data;
+
+    } catch (error) {
+        toast.error(error.response.data.message);
+        return rejectWithValue(error.response.data.message);
+    }
+})
+export const logout = createAsyncThunk('auth/logout', async ({ toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPublic.post(`/logout`);
-        toast.success('Successfully logged out.');
+        toast.success('Đã đăng xuất thành công.');
         return data;
 
     } catch (error) {
@@ -49,10 +72,10 @@ export const logout = createAsyncThunk('auth/logout', async({ toast }, { rejectW
     }
 })
 
-export const changePassword = createAsyncThunk('auth/changePassword', async({ jsonData, toast }, { rejectWithValue }) => {
+export const changePassword = createAsyncThunk('auth/changePassword', async ({ jsonData, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.put(`/password/update`, jsonData);
-        toast.success('Password changed.');
+        toast.success('Mật khẩu đã được thay đổi.');
         return data;
 
     } catch (error) {
@@ -61,10 +84,10 @@ export const changePassword = createAsyncThunk('auth/changePassword', async({ js
     }
 })
 
-export const updateProfile = createAsyncThunk('auth/updateProfile', async({ formData, toast }, { rejectWithValue }) => {
+export const updateProfile = createAsyncThunk('auth/updateProfile', async ({ formData, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.put(`/me/update`, formData, { headers: { 'Content-type': 'multipart/form-data' } });
-        toast.success('Successfully updated.');
+        toast.success('Cập nhật thành công.');
         return data;
 
     } catch (error) {
@@ -73,9 +96,17 @@ export const updateProfile = createAsyncThunk('auth/updateProfile', async({ form
     }
 })
 
-export const getAllUsers = createAsyncThunk('auth/getAllUsers', async({ toast }, { rejectWithValue }) => {
+export const getAllUsers = createAsyncThunk('auth/getAllUsers', async ({ search, currentPage, startDate, endDate, blocked, role, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPrivate.get(`users`);
+        let query = '';
+        if (search) query += `keyword=${search}&`;
+        if (currentPage) query += `page=${currentPage}&`;
+        if (startDate) query += `createdAt[gte]=${startDate}T00:00:00.000Z&`;
+        if (endDate) query += `createdAt[lte]=${endDate}T23:59:59.999Z&`;
+        if (blocked) query += `blocked=${blocked}&`;
+        if (role) query += `roles=${role}&`
+        query = query.endsWith('&') ? query.slice(0, -1) : query;
+        const { data } = await axiosPrivate.get(`users?${query}`);
         return data;
 
     } catch (error) {
@@ -84,7 +115,7 @@ export const getAllUsers = createAsyncThunk('auth/getAllUsers', async({ toast },
     }
 })
 
-export const deleteUser = createAsyncThunk('auth/deleteUser', async({ id, toast }, { rejectWithValue }) => {
+export const deleteUser = createAsyncThunk('auth/deleteUser', async ({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.delete(`users/${id}`);
         return data;
@@ -94,7 +125,7 @@ export const deleteUser = createAsyncThunk('auth/deleteUser', async({ id, toast 
         return rejectWithValue(error.response.data.message);
     }
 })
-export const getUserDetails = createAsyncThunk('auth/getUserDetails', async({ id, toast }, { rejectWithValue }) => {
+export const getUserDetails = createAsyncThunk('auth/getUserDetails', async ({ id, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.get(`users/${id}`);
         return data;
@@ -105,10 +136,10 @@ export const getUserDetails = createAsyncThunk('auth/getUserDetails', async({ id
     }
 })
 
-export const updateUserRole = createAsyncThunk('auth/updateUserRole', async({ id, jsonData, toast }, { rejectWithValue }) => {
+export const updateUserRole = createAsyncThunk('auth/updateUserRole', async ({ id, jsonData, toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPrivate.put(`users/${id}`, jsonData);
-        toast.success('User updated.');
+        toast.success('Đã Cập Nhật.');
         return data;
 
     } catch (error) {
@@ -160,20 +191,21 @@ const authSlice = createSlice({
             state.credentials.accessToken = action.payload.accessToken;
             state.credentials.user = action.payload.user;
         },
-        [loginGoogle.rejected]: (state, action) => {
+        [login.rejected]: (state, action) => {
             state.credentials.loading = false;
             state.credentials.error = action.payload;
         },
-        //login google
-        [loginGoogle.pending]: (state, action) => {
+        //
+        //login
+        [LoginGoogle.pending]: (state, action) => {
             state.credentials.loading = true;
         },
-        [loginGoogle.fulfilled]: (state, action) => {
+        [LoginGoogle.fulfilled]: (state, action) => {
             state.credentials.loading = false;
             state.credentials.accessToken = action.payload.accessToken;
             state.credentials.user = action.payload.user;
         },
-        [loginGoogle.rejected]: (state, action) => {
+        [LoginGoogle.rejected]: (state, action) => {
             state.credentials.loading = false;
             state.credentials.error = action.payload;
         },
@@ -210,6 +242,7 @@ const authSlice = createSlice({
         [updateProfile.fulfilled]: (state, action) => {
             state.mutationResult.loading = false;
             state.mutationResult.success = action.payload.success;
+
             state.credentials.user = action.payload.user;
         },
         [updateProfile.rejected]: (state, action) => {
@@ -224,6 +257,9 @@ const authSlice = createSlice({
         [getAllUsers.fulfilled]: (state, action) => {
             state.userlist.loading = false;
             state.userlist.users = action.payload.users;
+            state.userlist.userCount = action.payload.userCount;
+            state.userlist.resultPerPage = action.payload.resultPerPage;
+            state.userlist.filteredUsersCount = action.payload.filteredUsersCount;
         },
         [getAllUsers.rejected]: (state, action) => {
             state.userlist.loading = false;
