@@ -7,10 +7,11 @@ import { bannerDetails, resetMutationResult, selectBannerDetails, selectBannerMu
 import { IMAGE_BASEURL } from '../../../constants/baseURL';
 import UpdateIcon from '@mui/icons-material/Update';
 import PhotoIcon from '@mui/icons-material/Photo';
-
+import { useNavigate } from 'react-router-dom';
 const UpdateBanner = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
   const [LinkURL, setLinkURL] = useState('');
@@ -19,10 +20,10 @@ const UpdateBanner = () => {
   const [imageURL, setImageURL] = useState('');
   const [file, setFile] = useState('');
 
-  const { loading, banner } = useSelector(selectBannerDetails);
+  const { loading, banner ,error} = useSelector(selectBannerDetails);
   const { loading: isUpdating, success } = useSelector(selectBannerMutationResult);
   const { banners } = useSelector(selectAllBanner);
-
+ 
   const imageHandler = (e) => {
     if (e.target.name === 'ImageURL') {
       setFile(e.target.files);
@@ -65,7 +66,11 @@ const UpdateBanner = () => {
       setImageURL(banner?.ImageURL?.url);
     }
   }, [banner]);
-
+  
+  if (error) {
+    navigate('/authorized/bannerlist');
+    return null;
+  }
   const translateStatus = (status) => {
     switch (status) {
         case 'pause':

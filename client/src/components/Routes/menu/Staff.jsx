@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { FaHome, FaGlobe, FaClipboardList, FaStar, FaShoppingCart, FaUsers, FaTag, FaBoxes, FaBullhorn, FaNewspaper, FaFolder } from 'react-icons/fa';  // Import các biểu tượng
 
 const SlideBar = () => {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ const SlideBar = () => {
                                 onClick={(e) => handleLinkClick('dashboard', e)}
                                 aria-expanded="false"
                             >
-                                <i data-feather="home" className="feather-icon"></i>
+                                <FaHome className="feather-icon" />  {/* Biểu tượng nhà */}
                                 <span className="hide-menu">Dashboard</span>
                             </a>
                         </li>
@@ -45,10 +46,10 @@ const SlideBar = () => {
 
                         {[
 
-                            { menu: 'product', label: 'Sản Phẩm' },
-                            { menu: 'banner', label: 'Biểu Ngữ' },
-                            { menu: 'blog', label: 'Tin' }
-                        ].map(({ menu, label }) => (
+                            { menu: 'product', label: 'Sản Phẩm', icon: <FaBoxes className="feather-icon" /> },
+                            { menu: 'banner', label: 'Biểu Ngữ', icon: <FaBullhorn className="feather-icon" /> },
+                            { menu: 'blog', label: 'Tin', icon: <FaNewspaper className="feather-icon" /> }
+                        ].map(({ menu, label, icon }) => (
                             <li key={menu} className={`sidebar-item ${openMenus.includes(menu) ? 'selected' : ''}`}>
                                 <a
                                     className={`sidebar-link has-arrow ${activeLink === menu ? 'active' : ''}`}
@@ -59,7 +60,7 @@ const SlideBar = () => {
                                     }}
                                     aria-expanded={openMenus.includes(menu)}
                                 >
-                                    <i data-feather="file" className="feather-icon"></i>
+                                    {icon}  
                                     <span className="hide-menu">{label}</span>
                                 </a>
                                 <ul className={`collapse first-level base-level-line ${openMenus.includes(menu) ? 'in' : ''}`}>
@@ -69,7 +70,7 @@ const SlideBar = () => {
                                             className={`sidebar-link ${activeLink === `${menu}` ? 'active' : ''}`}
                                             onClick={(e) => handleLinkClick(menu, e)}
                                         >
-                                            <span className="hide-menu">Tạo Mới {label} </span>
+                                            <span className="hide-menu">Tạo Mới {label}</span>
                                         </a>
                                     </li>
                                     <li className="sidebar-item">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams ,useNavigate} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
@@ -8,12 +8,13 @@ import { brandDetails, resetMutationResult, selectBrandDetails, selectBrandMutat
 const UpdateBrand = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [Status, setStatus] = useState('');
 
-    const { loading, brand } = useSelector(selectBrandDetails);
+    const { loading, brand ,error} = useSelector(selectBrandDetails);
     const { loading: isUpdating, success } = useSelector(selectBrandMutationResult);
 
     const handleSubmit = (e) => {
@@ -49,7 +50,10 @@ const UpdateBrand = () => {
     if (brand == undefined
     ) {
         return <BoxShadowLoader />
-    }
+    }if (error) {
+        navigate('/authorized/brandlist');
+        return null;
+      }
     return (
         <>
             {loading ? <BoxShadowLoader /> :

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet,useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { selectLoggedInUser } from '../../redux/features/authSlice';
 import jwtDecode from 'jwt-decode';
@@ -12,15 +12,29 @@ import Staff from './menu/Staff';
 
 const AuthorizedRoute = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
     const { user, accessToken } = useSelector(selectLoggedInUser);
     let role = '';
+
+    let path = '/';
+    if (location.state) {
+        path = location.state.path;
+    }
+
     if (accessToken) {
         const { UserInfo } = jwtDecode(accessToken);
         role = UserInfo.roles[0].toString();
     }
-
+   
     const [isSidebarMini, setIsSidebarMini] = useState(window.innerWidth <= 1167);
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+    
+    useEffect(() => {
+        if (!accessToken) {
+            navigate(path);
+        }
+    }, [accessToken, navigate, path]);
 
     useEffect(() => {
         const handleResize = () => {

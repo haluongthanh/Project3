@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams ,useNavigate} from 'react-router-dom';
 
 import { useSelector, useDispatch } from "react-redux";
 import { selectBlogDetails, blogsDetails } from "../../redux/features/blogSlice";
@@ -11,7 +11,9 @@ import { formatDate } from "../../utility/formatDate";
 const BlogDetails = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
-    const { loading, blog } = useSelector(selectBlogDetails);
+    const navigate = useNavigate();
+
+    const { loading, blog ,error} = useSelector(selectBlogDetails);
     useEffect(() => {
 
         dispatch(blogsDetails({ id, toast }));
@@ -20,7 +22,10 @@ const BlogDetails = () => {
     if (loading == undefined || blog == undefined) {
         return <BoxShadowLoader />
     }
-    console.log(blog)
+    if (error) {
+        navigate('/blogs/all');
+        return null;
+      }
     return (
         <div class="article-layout">
             <div class="breadcrumb-wrap"><div class="container-fluid">

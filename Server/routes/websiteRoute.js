@@ -19,7 +19,7 @@ router.route('/web/:id')
     .put(isAuthenticated,
         authorizeRoles('admin'),
         fileUpload({ createParentPath: true }),
-        fileExtLimiter(['.png', '.jpg', '.jpeg', '.webp', '.svg']),
+        fileExtLimiter(['.svg']),
         fileSizeLimiter, updateWebsite);
 
 

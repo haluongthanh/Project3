@@ -15,31 +15,51 @@ import logReducer from './redux/features/logSlice'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import storage from 'redux-persist/lib/storage';
 import { useReducer } from 'react';
+import { encryptTransform } from 'redux-persist-transform-encrypt';
 
+const secretKey = 'my-super-secret-key'; 
+
+
+const encryptor = encryptTransform({
+    secretKey,
+    onError: function (error) {
+        // Handle the error here
+        console.error('Encryption error:', error);
+    },
+});
 //oj
 const persistConfig = {
     key: 'root',
     version: 1,
     storage,
+    transforms: [encryptor], 
+}
+const shippingConfig = {
+    key: 'shippng',
+    version: 1,
+    storage,
 }
 const rootReducer = combineReducers({
-    auth: AuthReducer,
+    auth: persistReducer(persistConfig, AuthReducer),
     brand: BrandReducer,
     category: CategoryReducer,
     banner: bannerSlice,
     product: ProductReducer,
     cart: CartReducer,
     review: ReviewReducer,
-    shipping: ShippingReducer,
+    shipping:  persistReducer(shippingConfig, ShippingReducer),
     order: OrderReducer,
     blog: blogReducer,
     blogCategory: blogVCategoryReducer,
     web: websiteReducer,
     log:logReducer
 })
+
+//save all reducer in local storage
 const persistedReducer = persistReducer(persistConfig, rootReducer)
+
 export const store = configureStore({
-    reducer: persistedReducer,
+    reducer: rootReducer,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: {
             ignoreActions: [FLUSH, REHYDRATE, PAUSE, PURGE, PERSIST, REGISTER]

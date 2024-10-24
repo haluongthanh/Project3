@@ -19,7 +19,6 @@ export const getProducts = createAsyncThunk('product/getProducts', async ({ sear
         }
         if (ratingsfilter) query += `ratings[gte]=${ratingsfilter}&`;
         if (sortbyPrice) query += `sortbyPrice=${sortbyPrice}&`;
-
         query = query.endsWith('&') ? query.slice(0, -1) : query;
         const { data } = await axiosPrivate.get(`/products?${query}`);
         return data;

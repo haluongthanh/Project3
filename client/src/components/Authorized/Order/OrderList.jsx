@@ -168,12 +168,9 @@ const OrderList = () => {
                                             <Link to={`/authorized/order/${order._id}`} className="btn btn-primary">
                                                 <EditIcon />
                                             </Link>
-                                            <IconButton
-                                                color='error'
-                                                onClick={() => handleDelete(order._id)}
-                                            >
-                                                <DeleteForeverIcon />
-                                            </IconButton>
+                                            <button onClick={() => handleDelete(order._id)} className="btn btn-danger ms-2">
+                                                < DeleteForeverIcon />
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}

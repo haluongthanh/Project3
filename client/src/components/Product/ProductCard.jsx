@@ -71,7 +71,7 @@ const ProductCard = React.forwardRef(({ product }, ref) => {
   }
 
   return (
-    <div class="listProduct-row">
+    <div class="listProduct-row" ref={ref}>
       <div class="col-xl-3 col-lg-3 col-6 proloop">
         <div class="proloop-block">
           <div class="proloop-img">

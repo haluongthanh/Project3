@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link ,useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { CancelOrder, getOrderDetails, selectOrderDetails, updateOrder, selectOrderMutationResult, resetMutationResult } from '../../../redux/features/orderSlice';
@@ -15,7 +15,9 @@ const ProcessOrder = () => {
     const { id } = useParams();
     const [status, setStatus] = useState('');
     const dispatch = useDispatch();
-    const { loading, order } = useSelector(selectOrderDetails);
+    const navigate = useNavigate()
+
+    const { loading, order,error } = useSelector(selectOrderDetails);
     const { success } = useSelector(selectOrderMutationResult);
 
     const submitHandler = (e) => {
@@ -41,7 +43,10 @@ const ProcessOrder = () => {
 
     if (loading == undefined || order == undefined) {
         return <BoxShadowLoader />
-    }
+    }if (error) {
+        navigate('/authorized/orderlist');
+        return null;
+      }
     return (
         <>
             {loading ? <BoxShadowLoader /> :

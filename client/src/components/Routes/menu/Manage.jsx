@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { FaHome, FaGlobe, FaClipboardList, FaStar, FaShoppingCart, FaUsers, FaTag, FaBoxes, FaBullhorn, FaNewspaper, FaFolder } from 'react-icons/fa';  // Import các biểu tượng
 
 const SlideBar = () => {
     const navigate = useNavigate();
@@ -8,7 +9,7 @@ const SlideBar = () => {
 
     const handleLinkClick = (link, e) => {
         e.preventDefault();
-        navigate(link); 
+        navigate(link);
         setActiveLink(link);
     };
 
@@ -28,30 +29,30 @@ const SlideBar = () => {
                 <nav className="sidebar-nav">
                     <ul id="sidebarnav">
                         <li className={`sidebar-item ${activeLink === 'dashboard' ? 'selected' : ''}`}>
-                            <a 
-                                className={`sidebar-link ${activeLink === 'dashboard' ? 'active' : ''}`} 
+                            <a
+                                className={`sidebar-link ${activeLink === 'dashboard' ? 'active' : ''}`}
                                 href=""
                                 onClick={(e) => handleLinkClick('dashboard', e)}
                                 aria-expanded="false"
                             >
-                                <i data-feather="home" className="feather-icon"></i>
+                                <FaHome className="feather-icon" />  {/* Biểu tượng nhà */}
                                 <span className="hide-menu">Dashboard</span>
                             </a>
                         </li>
                         <li className="list-divider"></li>
-                       
+
 
                         <li className="list-divider"></li>
                         <li className="nav-small-cap"><span className="hide-menu">Manage</span></li>
 
                         {[
-                            { menu: 'category', label: 'Danh Mục' },
-                            { menu: 'brand', label: 'Thương Hiệu' },
-                            { menu: 'product', label: 'Sản Phẩm' },
-                            { menu: 'banner', label: 'Biểu Ngữ' },
-                            { menu: 'blogcategory', label: 'Danh Mục Tin' },
-                            { menu: 'blog', label: 'Tin' }
-                        ].map(({ menu, label }) => (
+                            { menu: 'category', label: 'Danh Mục', icon: <FaFolder className="feather-icon" /> },
+                            { menu: 'brand', label: 'Thương Hiệu', icon: <FaTag className="feather-icon" /> },
+                            { menu: 'product', label: 'Sản Phẩm', icon: <FaBoxes className="feather-icon" /> },
+                            { menu: 'banner', label: 'Biểu Ngữ', icon: <FaBullhorn className="feather-icon" /> },
+                            { menu: 'blogcategory', label: 'Danh Mục Tin', icon: <FaFolder className="feather-icon" /> },
+                            { menu: 'blog', label: 'Tin', icon: <FaNewspaper className="feather-icon" /> }
+                        ].map(({ menu, label, icon }) => (
                             <li key={menu} className={`sidebar-item ${openMenus.includes(menu) ? 'selected' : ''}`}>
                                 <a
                                     className={`sidebar-link has-arrow ${activeLink === menu ? 'active' : ''}`}
@@ -62,7 +63,7 @@ const SlideBar = () => {
                                     }}
                                     aria-expanded={openMenus.includes(menu)}
                                 >
-                                    <i data-feather="file" className="feather-icon"></i>
+                                    {icon}  {/* Biểu tượng động */}
                                     <span className="hide-menu">{label}</span>
                                 </a>
                                 <ul className={`collapse first-level base-level-line ${openMenus.includes(menu) ? 'in' : ''}`}>
@@ -72,7 +73,7 @@ const SlideBar = () => {
                                             className={`sidebar-link ${activeLink === `${menu}` ? 'active' : ''}`}
                                             onClick={(e) => handleLinkClick(menu, e)}
                                         >
-                                            <span className="hide-menu">Tạo Mới {label} </span>
+                                            <span className="hide-menu">Tạo Mới {label}</span>
                                         </a>
                                     </li>
                                     <li className="sidebar-item">
@@ -89,8 +90,8 @@ const SlideBar = () => {
                         ))}
 
                         <li className={`sidebar-item ${activeLink === 'reviewlist' ? 'selected' : ''}`}>
-                            <a 
-                                className={`sidebar-link ${activeLink === 'reviewlist' ? 'active' : ''}`} 
+                            <a
+                                className={`sidebar-link ${activeLink === 'reviewlist' ? 'active' : ''}`}
                                 href=""
                                 onClick={(e) => handleLinkClick('reviewlist', e)}
                                 aria-expanded="false"
@@ -100,8 +101,8 @@ const SlideBar = () => {
                             </a>
                         </li>
                         <li className={`sidebar-item ${activeLink === 'orderlist' ? 'selected' : ''}`}>
-                            <a 
-                                className={`sidebar-link ${activeLink === 'orderlist' ? 'active' : ''}`} 
+                            <a
+                                className={`sidebar-link ${activeLink === 'orderlist' ? 'active' : ''}`}
                                 href=""
                                 onClick={(e) => handleLinkClick('orderlist', e)}
                                 aria-expanded="false"
@@ -110,7 +111,7 @@ const SlideBar = () => {
                                 <span className="hide-menu"> Đơn Hàng</span>
                             </a>
                         </li>
-                        
+
                     </ul>
                 </nav>
             </div>

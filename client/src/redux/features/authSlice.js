@@ -49,17 +49,22 @@ export const resetPassword = createAsyncThunk('auth/resetPassword', async ({ jso
     }
 })
 
-export const LoginGoogle = createAsyncThunk('auth/loginGoogle', async ({ jsonData, toast }, { rejectWithValue }) => {
+export const LoginGoogle = createAsyncThunk('auth/loginGoogle', async ({ data, toast }, { rejectWithValue }) => {
     try {
-        const { data } = await axiosPublic.post(`/auth/googleLogin`, jsonData);
-        toast.success('Đã đăng nhập thành công.');
-        return data;
-
+        if (data.success) {
+            toast.success('Đã đăng nhập thành công.'); 
+            return data; 
+        } else {
+            toast.error(data.message || 'Đăng nhập thất bại.');
+            return rejectWithValue(data.message || 'Đăng nhập thất bại.'); 
+        }
     } catch (error) {
-        toast.error(error.response.data.message);
-        return rejectWithValue(error.response.data.message);
+        // Handle any unexpected errors
+        toast.error('Đã xảy ra lỗi trong quá trình đăng nhập.');
+        return rejectWithValue(error.message); // Pass the error message
     }
-})
+});
+
 export const logout = createAsyncThunk('auth/logout', async ({ toast }, { rejectWithValue }) => {
     try {
         const { data } = await axiosPublic.post(`/logout`);

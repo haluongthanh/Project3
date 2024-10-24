@@ -1,5 +1,5 @@
 const express = require('express');
-const { checkrefreshPassword, resetPassword, forgotPassword, AuthGoogle, registerUser, loginUser, logout, updatePassword, updateProfile, getUsers, getUserDetails, updateUserRole, deleteUser, refreshToken } = require('../controllers/userController');
+const { checkrefreshPassword, resetPassword, forgotPassword, AuthGoogle, registerUser, loginUser, logout, updatePassword, updateProfile, getUsers, getUserDetails, updateUserRole, deleteUser, refreshToken, LoginSuccess } = require('../controllers/userController');
 const fileUpload = require('express-fileupload');
 const filesPayloadExists = require('../middleware/filesPayloadExists');
 const fileExtLimiter = require('../middleware/fileExtLimiter');
@@ -9,7 +9,8 @@ const passport = require('passport')
 const pastportConfig = require('../utils/passport')
 const router = express.Router();
 
-const CLIENT_URL = 'http://localhost:3000';
+// const CLIENT_URL = 'http://localhost:3000';
+const CLIENT_URL = 'https://bhfx3pdyma.ap-southeast-2.awsapprunner.com';
 
 router.route('/register')
     .post(registerUser)
@@ -47,16 +48,6 @@ router.route('/auth/facebook/callback').get(passport.authenticate('facebook', {
     failureRedirect: `${CLIENT_URL}/auth`,
 }))
 
-router.get("/auth/login/success", (req, res) => {
-    if (req.user) {
-        res.status(200).json({
-            success: true,
-            message: "successfull",
-            user: req.user,
-            cookies: req.cookies
-        });
-    }
-});
-
+router.route("/auth/login/success").get(LoginSuccess);
 
 module.exports = router;

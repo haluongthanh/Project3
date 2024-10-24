@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams ,useNavigate} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getLogDetails, selectLogDetails } from '../../../redux/features/logSlice';
 import { toast } from "react-toastify";
@@ -7,8 +7,9 @@ import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
 
 const LogDetails = () => {
     const { id } = useParams();
-    const { log } = useSelector(selectLogDetails);
+    const { log ,error} = useSelector(selectLogDetails);
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     useEffect(() => {
         dispatch(getLogDetails({ id, toast }));
@@ -18,7 +19,10 @@ const LogDetails = () => {
     ) {
       return <BoxShadowLoader />
     }
-
+    if (error) {
+        navigate('/authorized/loglist');
+        return null;
+      }
     return (
         <div className="container mt-4">
             <h1 className="mb-4">Log Information</h1>

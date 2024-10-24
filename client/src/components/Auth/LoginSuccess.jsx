@@ -27,11 +27,8 @@ const LoginSuccess = () => {
             try {
                 const response = await axios.get(`${BASEURL}/api/v1/auth/login/success`, { withCredentials: true });
                 if (response.data.success) {
-                    console.log("data : ",response.data.user)
-                    const jsonData =new FormData();
-                    jsonData.append("email",response.data.user.emails[0].value)
-                    jsonData.append("name",response.data.user.displayName)
-                    dispatch(LoginGoogle({jsonData,toast}))
+                    console.log("data : ",response.data)
+                    dispatch(LoginGoogle({data:response.data,toast}))
                 } else {
                     setError('Failed to fetch user data');
                 }

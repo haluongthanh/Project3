@@ -1,7 +1,8 @@
 import axios from "axios";
 import { BASEURL } from "../constants/baseURL";
 import {axiosPublic} from './axiosPublic';
-import {refreshUserDetails} from './features/authSlice';
+import {refreshUserDetails,logout} from './features/authSlice';
+import { toast } from "react-toastify";
 
 let store
 
@@ -31,13 +32,17 @@ axiosPrivate.interceptors.response.use(
         const prevRequest=error?.config;
         if(error?.response?.status=== 403 && !prevRequest?.sent){
             prevRequest.sent=true;
-            const {data}=await axiosPublic.get(`/refresh`);  
-            await store.dispatch(refreshUserDetails(data));
-            const accessToken=store?.getState()?.auth?.credentials?.accessToken;        
-            if(accessToken){
-                prevRequest.headers['Authorization']=`Bearer ${data.accessToken}`; 
-            }                   
-            return axiosPrivate(prevRequest);
+            try {
+                const {data}=await axiosPublic.get(`/refresh`);  
+                await store.dispatch(refreshUserDetails(data));
+                const accessToken=store?.getState()?.auth?.credentials?.accessToken;        
+                if(accessToken){
+                    prevRequest.headers['Authorization']=`Bearer ${data.accessToken}`; 
+                }                   
+                return axiosPrivate(prevRequest);
+            } catch (refreshError) {
+            }
+           
         }
         return Promise.reject(error);
     }

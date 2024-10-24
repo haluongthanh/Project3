@@ -222,7 +222,7 @@ const SellerDashboard = () => {
             <table className="table table-bordered">
               <thead>
                 <tr className="table-secondary">
-                  <th>Order ID</th>
+                  <th>Order Code</th>
                   <th>Name</th>
                   <th>Phone</th>
                   <th>Status</th>
@@ -236,7 +236,7 @@ const SellerDashboard = () => {
               <tbody>
                 {orders.map(order => (
                   <tr key={order._id}>
-                    <td>{order._id}</td>
+                    <td>{order.orderCode}</td>
                     <td>{order.shippingInfo.name}</td>
                     <td>{order.shippingInfo.phone}</td>
                     <td>{order.orderStatus}</td>

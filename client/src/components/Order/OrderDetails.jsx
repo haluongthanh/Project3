@@ -7,15 +7,15 @@ import BoxShadowLoader from '../Skeletons/BoxShadowLoader';
 import { IMAGE_BASEURL } from '../../constants/baseURL';
 import { formatCurrency } from '../../utility/formatCurrency';
 import { formatDate } from '../../utility/formatDate';
+import { useNavigate } from 'react-router-dom';
 
 import { CancelOrder } from '../../redux/features/orderSlice';
 import './OrderDetails.css'
 const OrderDetails = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
-    const { loading, order } = useSelector(selectOrderDetails);
-    console.log(order);
-
+    const navigate = useNavigate();
+    const { loading, order, error } = useSelector(selectOrderDetails);
     useEffect(() => {
         dispatch(getOrderDetails({ id, toast }));
     }, [id, dispatch])
@@ -26,6 +26,10 @@ const OrderDetails = () => {
     if (loading == undefined || order == undefined) {
         return <BoxShadowLoader />
     }
+    if (error) {
+        navigate('/profile#orders');
+        return null;
+      }
     return (
         <>
             {loading ? <BoxShadowLoader /> :

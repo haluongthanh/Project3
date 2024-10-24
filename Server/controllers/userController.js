@@ -9,52 +9,50 @@ const jwt = require('jsonwebtoken');
 const { saveImages, removeFiles } = require('../utils/processImages');
 const { sendVerificationEmail, generateVerificationCode } = require('../utils/emailUtils');
 const secretKey = 'hbs3550'
-/* const cookieOption={httpOnly:true,secure:true,sameSite:'None',maxAge:24*60*60*1000}; */
 const cookieOption = { httpOnly: true };
 const crypto = require('crypto')
 const { logAction } = require('../utils/log')
-
 const ApiFeatures = require('../utils/apiFeatures');
 
-exports.AuthGoogle = asyncHandler(async (req, res, next) => {
-    const { email, name } = req.body;
-    const cookies = req.cookies;
-    let user = await User.findOne({ email: email });
-
-    if (user) {
-        let newRefreshTokenArray = user.refreshToken ? user.refreshToken : [];
-        const accessToken = getAccessToken(user);
-        const newRefreshToken = getRefreshToken(user);
-        if (cookies?.jwt) {
-            const refreshToken = cookies.jwt;
-            const foundToken = await User.findOne({ refreshToken }).exec();
-            if (!foundToken) {
-                console.log('attempted refresh token reuse at login');
-                newRefreshTokenArray = [];
+exports.LoginSuccess=asyncHandler(async(req,res,next)=>{
+    if (req.user) {
+        const cookies = req.cookies;
+        console.log(cookies)
+        let user = await User.findOne({ email:req.user.emails[0].value });
+        if (user) {
+            let newRefreshTokenArray = user.refreshToken ? user.refreshToken : [];
+            const accessToken = getAccessToken(user);
+            const newRefreshToken = getRefreshToken(user);
+            if (cookies?.jwt) {
+                const refreshToken = cookies.jwt;
+                const foundToken = await User.findOne({ refreshToken }).exec();
+                if (!foundToken) {
+                    console.log('attempted refresh token reuse at login');
+                    newRefreshTokenArray = [];
+                }
+                res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
             }
-            res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+            await logAction(
+                'Login User',
+                'LOGIN',
+                'User',
+                user._id,
+                user._id,
+                {
+                    name: user.name,
+                    email: user.email,
+                },
+                null
+            );
+            user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+            await user.save();
+            res.cookie('jwt', newRefreshToken, cookieOption);
+            res.status(200).json({ success: true, accessToken, user: sendUser(user) });
+        }else{
+            return next(new ErrorHandler('error'))
         }
-        await logAction(
-            'Login User',
-            'LOGIN',
-            'User',
-            user._id,
-            user._id,
-            {
-                name: user.name,
-                email: user.email,
-            },
-            null
-        );
-        user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-        await user.save();
-        res.cookie('jwt', newRefreshToken, cookieOption);
-        res.status(200).json({ success: true, accessToken, user: sendUser(user) });
-    }else{
-        return next(new ErrorHandler('error'))
     }
-});
-
+})
 
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
@@ -69,7 +67,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
     await user.save();
 
-    const resetLink = `http:/localhost:3000/reset-password/${refreshPassword}`;
+    const resetLink = `https://bhfx3pdyma.ap-southeast-2.awsapprunner.com/reset-password/${refreshPassword}`;
     const text = `<h1>reset password link: <a href='${resetLink}'>Reset Password</h1>`;
 
     sendVerificationEmail(user, text);
@@ -159,22 +157,24 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
                 console.log('attempted refresh token reuse at login');
                 newRefreshTokenArray = [];
             }
-            await logAction(
-                'Login User',
-                'LOGIN',
-                'User',
-                user._id,
-                user._id,
-                {
-                    name: user.name,
-                    email: user.email,
-                },
-                null
-            );
+            
 
             res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
         }
+        
         user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+        await logAction(
+            'Login User',
+            'LOGIN',
+            'User',
+            user._id,
+            user._id,
+            {
+                name: user.name,
+                email: user.email,
+            },
+            null
+        );
         await user.save();
         res.cookie('jwt', newRefreshToken, cookieOption);
         res.status(200).json({ success: true, accessToken, user: sendUser(user) });

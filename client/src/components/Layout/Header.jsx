@@ -11,9 +11,7 @@ import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
 import SearchBar from './search';
 import { selectCartItems } from '../../redux/features/cartSlice';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { URL } from '../../constants/baseURL';
+import { IMAGE_BASEURL, URL } from '../../constants/baseURL';
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
     right: -3,
@@ -33,7 +31,6 @@ const Header = ({ website }) => {
       toast.info('Vui lòng đăng nhập để tra cứu đơn hàng của bạn.');
     }
   };
-
   return (
     <header className='main-header'>
       <div className='main-header--top'>
@@ -46,7 +43,7 @@ const Header = ({ website }) => {
             <div className='logo-area'>
               <Tooltip title='Home'>
                 <a href='/'>
-                  <img src={logo} alt='oshop ecommerce site' style={{ width: '90px' }} />
+                  <img src={IMAGE_BASEURL+website[0].logo.url} alt='oshop ecommerce site' style={{ width: '140px' }} />
                 </a>
               </Tooltip>
             </div>

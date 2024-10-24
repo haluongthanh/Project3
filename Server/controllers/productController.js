@@ -48,7 +48,7 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
     if (req.query.limit) {
         resultPerPage = parseInt(req.query.limit);
     } else {
-        resultPerPage = 8;
+        resultPerPage = 10;
     }
 
     //sort by ratings
@@ -268,18 +268,21 @@ exports.removeImage = asyncHandler(async (req, res, next) => {
     if (!product) {
         return next(new ErrorHandler('Sản Phẩm không tồn tại', 404));
     }
+    const filePath = path.join(__dirname, '..', 'public', image.url);
 
+    try {
+        await removeFile(filePath);
+    } catch (err) {
+        // Thay vì ngắt luồng, chỉ ghi log và tiếp tục
+        console.log(`Không tìm thấy hoặc không thể xóa tệp: ${filePath}`);
+    }
+    
     const image = product.images.find(img => img._id.toString() === imageId);
     if (!image) {
         return next(new ErrorHandler('Image not found', 404));
     }
 
-    const filePath = path.join(__dirname, '..', 'public', image.url);
-    try {
-        await removeFile(filePath);
-    } catch (err) {
-        return next(new ErrorHandler('Failed to remove image file', 500));
-    }
+    
 
     product.images = product.images.filter(img => img._id.toString() !== imageId);
     await logAction(

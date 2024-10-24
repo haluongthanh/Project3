@@ -25,7 +25,7 @@ const productSchema = new mongoose.Schema({
         default: 1
     },
     images: [{
-        id: { type: String, default: uuidv4 },
+        id: { type: Number },
         url: { type: String }
     }],
     category: {

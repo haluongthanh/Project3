@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams ,useNavigate} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import BoxShadowLoader from '../../../components/Skeletons/BoxShadowLoader';
@@ -13,6 +13,7 @@ import './Product.css';
 const UpdateProduct = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -31,21 +32,21 @@ const UpdateProduct = () => {
   const [status, setStatus] = useState('');
   const [deletedImages, setDeletedImages] = useState([]); // Thêm trạng thái cho ảnh đã xóa
 
-  const { loading, product } = useSelector(selectProductDetails);
+  const { loading, product,error } = useSelector(selectProductDetails);
   const { brands } = useSelector(selectAllBrands);
   const { categories } = useSelector(selectAllCategories);
   const { loading: isUpdating, success } = useSelector(selectProductMutationResult);
 
   const imageHandler = (e) => {
     const files = Array.from(e.target.files);
-  
+
     setProductFiles((prevFiles) => {
       const existingFileNames = new Set(prevFiles.map(file => file.name));
       const newFiles = files.filter(file => !existingFileNames.has(file.name));
-  
+
       return [...prevFiles, ...newFiles];
     });
-  
+
     const newImages = files.map((file, index) => {
       const reader = new FileReader();
       return new Promise((resolve) => {
@@ -55,23 +56,23 @@ const UpdateProduct = () => {
               id: `temp-${Date.now()}-${index}`,
               url: reader.result,
               file: file,
-              name: file.name 
+              name: file.name
             });
           }
         };
         reader.readAsDataURL(file);
       });
     });
-  
+
     Promise.all(newImages).then((imageUrls) => {
       setImages((prevImages) => [...prevImages, ...imageUrls]);
     });
   };
-  
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
@@ -86,11 +87,11 @@ const UpdateProduct = () => {
     formData.append('customLocalShipmentCost', customLocalShipmentCost);
     formData.append('customInternationalShipmentCost', customInternationalShipmentCost);
     formData.append('Status', status);
-  
+
     productFiles.forEach((file, i) => {
       formData.append(`productImage_${i}`, file);
     });
-  
+
     dispatch(updateProduct({ id, formData, toast })).then(() => {
       setProductFiles([]);
       setImages([]);
@@ -123,7 +124,7 @@ const UpdateProduct = () => {
       setImages(product.images.map(img => ({
         id: img._id,
         url: `${IMAGE_BASEURL}${img.url}`
-      }))); 
+      })));
       setStatus(product.Status);
     }
   }, [product]);
@@ -170,20 +171,20 @@ const UpdateProduct = () => {
     showXPathInStatusbar: false,
   }), []);
 
-const handleDeleteNewImage = (imageId) => {
-  setImages((prevImages) => prevImages.filter((image) => image.id !== imageId));
+  const handleDeleteNewImage = (imageId) => {
+    setImages((prevImages) => prevImages.filter((image) => image.id !== imageId));
 
-  setProductFiles((prevFiles) => {
-    const imageToDelete = images.find((image) => image.id === imageId);
-    if (imageToDelete) {
-      return prevFiles.filter((file) => file.name !== imageToDelete.name);
-    }
-    return prevFiles;
-  });
-};
+    setProductFiles((prevFiles) => {
+      const imageToDelete = images.find((image) => image.id === imageId);
+      if (imageToDelete) {
+        return prevFiles.filter((file) => file.name !== imageToDelete.name);
+      }
+      return prevFiles;
+    });
+  };
 
 
-  
+
   const handleDeleteDatabaseImage = (imageId) => {
     dispatch(deleteProductImg({ id, imageId, toast }))
       .then(() => {
@@ -196,21 +197,25 @@ const handleDeleteNewImage = (imageId) => {
       });
   };
   if (product == undefined
-    ||brands==undefined
-    ||categories==undefined
+    || brands == undefined
+    || categories == undefined
   ) {
     return <BoxShadowLoader />
   }
+   if (error) {
+    navigate('/authorized/productlist');
+    return null;
+  }
   const reverseTranslateStatus = (status) => {
     switch (status) {
-        case 'Tạm Dừng':
-            return 'pause';
-        case 'Hoạt Động':
-            return 'active';
-        default:
-            return status;
+      case 'Tạm Dừng':
+        return 'pause';
+      case 'Hoạt Động':
+        return 'active';
+      default:
+        return status;
     }
-};
+  };
   return (
     <>
       {loading ? <BoxShadowLoader /> :
@@ -421,7 +426,7 @@ const handleDeleteNewImage = (imageId) => {
                         } else {
                           handleDeleteDatabaseImage(img.id);
                         }
-                      }} 
+                      }}
                     >
                       X
                     </button>

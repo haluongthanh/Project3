@@ -10,17 +10,29 @@ const passport = require("passport");
 const passportConfig = require('./utils/passport');
 
 app.use(express.static(path.join(__dirname, 'public')));
-
+//https
 app.use(session({
     secret: 'abcdef12',
     resave: false,
     saveUninitialized: true,
+    proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
+    name: 'MyCoolWebAppCookieName', // This needs to be unique per-host.
     cookie: {
-        name: 'session',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      secure: true, // required for cookies to work on HTTPS
+      httpOnly: false,
+      sameSite: 'none'
     }
 }));
-
+//local
+// app.use(session({
+//     secret: 'abcdef12',
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//         name: 'session',
+//         maxAge: 24 * 60 * 60 * 1000 // 24 hours
+//     }
+// }));
 app.use(cors({
     origin: function(origin, callback) {
         const allowedOrigins = [

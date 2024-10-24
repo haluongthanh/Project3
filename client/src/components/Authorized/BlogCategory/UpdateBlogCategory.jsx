@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams ,useNavigate} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
@@ -11,6 +11,7 @@ import PhotoIcon from '@mui/icons-material/Photo';
 const UpdateBlogCategory = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -19,7 +20,7 @@ const UpdateBlogCategory = () => {
   const [file, setFile] = useState('');
   const [status, setStatus] = useState('');
 
-  const { loading, blogCategory } = useSelector(selectBlogCategoryDetails);
+  const { loading, blogCategory ,error} = useSelector(selectBlogCategoryDetails);
   const { loading: isUpdating, success } = useSelector(selectBlogCategoryMutationResult);
 
   const imageHandler = (e) => {
@@ -81,7 +82,10 @@ const UpdateBlogCategory = () => {
   ) {
     return <BoxShadowLoader />
   }
-
+  if (error) {
+    navigate('/authorized/blogcategorylist');
+    return null;
+  }
   return (
     <>
       {loading ? <BoxShadowLoader /> :

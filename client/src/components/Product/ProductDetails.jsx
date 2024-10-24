@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams ,useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux'
 import { selectProductDetails, productDetails } from '../../redux/features/productSlice';
 import { toast } from 'react-toastify';
@@ -28,7 +28,9 @@ const ProductDetails = () => {
     };
     const { id } = useParams();
     const dispatch = useDispatch();
-    const { loading, product } = useSelector(selectProductDetails);
+    const navigate = useNavigate();
+
+    const { loading, product,error } = useSelector(selectProductDetails);
     const { reviews } = useSelector(selectAllReviews);
     const { success } = useSelector(selectReviewMutationResult);
 
@@ -44,6 +46,10 @@ const ProductDetails = () => {
     if (loading == undefined || product == undefined) {
         return <BoxShadowLoader />
     }
+    if (error) {
+        navigate('/');
+        return null;
+      }
     const handleSubmitReviewRating = () => {
         setOpen(false);
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams ,useNavigate} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
@@ -9,6 +9,7 @@ import { IMAGE_BASEURL } from '../../../constants/baseURL';
 const UpdateCategory = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -17,7 +18,7 @@ const UpdateCategory = () => {
   const [file, setFile] = useState('');
   const [status, setStatus] = useState('');
 
-  const { loading, category } = useSelector(selectCategoryDetails);
+  const { loading, category ,error} = useSelector(selectCategoryDetails);
   const { loading: isUpdating, success } = useSelector(selectCategoryMutationResult);
 
   const imageHandler = (e) => {
@@ -74,6 +75,10 @@ const UpdateCategory = () => {
   if (category == undefined
   ) {
     return <BoxShadowLoader />
+  }
+  if (error) {
+    navigate('/authorized/categorylist');
+    return null;
   }
   return (
     <>

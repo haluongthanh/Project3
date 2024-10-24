@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams ,useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { blogsDetails, updateBlog, resetMutationResult, selectBlogDetails, selectBlogMutationResult } from '../../../redux/features/blogSlice';
@@ -13,6 +13,7 @@ import BoxShadowLoader from '../../Skeletons/BoxShadowLoader';
 const UpdateBlog = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -23,7 +24,7 @@ const UpdateBlog = () => {
   const [blogCategory, setBlogCategory] = useState('');
 
   const { blogCategorys } = useSelector(selectAllBlogCategory);
-  const { loading, blog } = useSelector(selectBlogDetails);
+  const { loading, blog ,error} = useSelector(selectBlogDetails);
   const { loading: isUpdating, success } = useSelector(selectBlogMutationResult);
 
   const imageHandler = (e) => {
@@ -129,7 +130,10 @@ const UpdateBlog = () => {
   if (blogCategorys == undefined || blog == undefined) {
     return <BoxShadowLoader />
   }
-
+  if (error) {
+    navigate('/authorized/bloglist');
+    return null;
+  }
   return (
     <div className="container mt-3">
       <h5 className="text-center">Cập Nhật Tin</h5>

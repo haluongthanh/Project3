@@ -75,7 +75,7 @@ class ApiFeatures {
             this.query = this.query.find({
                 brand: { $in: brands }
             });
-            delete queryCopy.category;
+            delete queryCopy.brand;
         }
         if (queryCopy.action) {
             this.query = this.query.find({
